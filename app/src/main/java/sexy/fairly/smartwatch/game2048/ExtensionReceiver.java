@@ -29,7 +29,7 @@ Copyright (c) 2011-2013, Sony Mobile Communications AB
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.sonymobile.smartconnect.extension.controlsample;
+package sexy.fairly.smartwatch.game2048;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
