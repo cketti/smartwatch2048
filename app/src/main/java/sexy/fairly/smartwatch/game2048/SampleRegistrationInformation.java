@@ -60,7 +60,7 @@ public class SampleRegistrationInformation extends RegistrationInformation {
 
     @Override
     public int getRequiredControlApiVersion() {
-        return 1;
+        return 2;
     }
 
     /*
@@ -125,13 +125,7 @@ public class SampleRegistrationInformation extends RegistrationInformation {
 
     @Override
     public boolean isDisplaySizeSupported(int width, int height) {
-        return ((width == SampleControlSmartWatch2.getSupportedControlWidth(mContext)
-                && height == SampleControlSmartWatch2
-                        .getSupportedControlHeight(mContext) || width == SampleControlSmartWatch
-                .getSupportedControlWidth(mContext) && height == SampleControlSmartWatch
-                .getSupportedControlHeight(mContext)) || (width == SampleControlSmartWirelessHeadsetPro
-                .getSupportedControlWidth(mContext) && height == SampleControlSmartWirelessHeadsetPro
-                .getSupportedControlHeight(mContext)));
+        return (width == SampleControlSmartWatch2.getSupportedControlWidth(mContext) &&
+                height == SampleControlSmartWatch2 .getSupportedControlHeight(mContext));
     }
-
 }
