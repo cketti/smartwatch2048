@@ -46,11 +46,6 @@ public class SampleRegistrationInformation extends RegistrationInformation {
 
     final Context mContext;
 
-    /**
-     * Create control registration object
-     *
-     * @param context The context
-     */
     protected SampleRegistrationInformation(Context context) {
         if (context == null) {
             throw new IllegalArgumentException("context == null");
@@ -63,11 +58,6 @@ public class SampleRegistrationInformation extends RegistrationInformation {
         return 2;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.sonyericsson.extras.liveware.extension.util.registration.
-     * RegistrationInformation#getTargetControlApiVersion()
-     */
     @Override
     public int getTargetControlApiVersion() {
         return 2;
@@ -88,11 +78,6 @@ public class SampleRegistrationInformation extends RegistrationInformation {
         return 0;
     }
 
-    /**
-     * Get the extension registration information.
-     *
-     * @return The registration configuration.
-     */
     @Override
     public ContentValues getExtensionRegistrationConfiguration() {
         String iconHostapp = ExtensionUtils.getUriString(mContext, R.drawable.icon);
@@ -100,8 +85,6 @@ public class SampleRegistrationInformation extends RegistrationInformation {
                 .getUriString(mContext, R.drawable.icon_extension);
         String iconExtension48 = ExtensionUtils
                 .getUriString(mContext, R.drawable.icon_extension48);
-        String iconExtensionBw = ExtensionUtils.getUriString(mContext,
-                R.drawable.icn_18x18_black_white_sample_control);
 
         ContentValues values = new ContentValues();
 
@@ -115,7 +98,6 @@ public class SampleRegistrationInformation extends RegistrationInformation {
         values.put(Registration.ExtensionColumns.HOST_APP_ICON_URI, iconHostapp);
         values.put(Registration.ExtensionColumns.EXTENSION_ICON_URI, iconExtension);
         values.put(Registration.ExtensionColumns.EXTENSION_48PX_ICON_URI, iconExtension48);
-        values.put(Registration.ExtensionColumns.EXTENSION_ICON_URI_BLACK_WHITE, iconExtensionBw);
         values.put(Registration.ExtensionColumns.NOTIFICATION_API_VERSION,
                 getRequiredNotificationApiVersion());
         values.put(Registration.ExtensionColumns.PACKAGE_NAME, mContext.getPackageName());
