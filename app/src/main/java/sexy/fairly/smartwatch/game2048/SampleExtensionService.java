@@ -80,7 +80,7 @@ public class SampleExtensionService extends ExtensionService {
      */
     @Override
     protected boolean keepRunningWhenConnected() {
-        return false;
+        return true;
     }
 
     @Override
@@ -92,6 +92,6 @@ public class SampleExtensionService extends ExtensionService {
             throw new IllegalArgumentException("No control for: " + hostAppPackageName);
         }
 
-        return new SampleControlSmartWatch2(hostAppPackageName, this, new Handler());
+        return new GameControlSmartWatch2(hostAppPackageName, this, new Handler());
     }
 }

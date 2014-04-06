@@ -125,7 +125,7 @@ public class SampleRegistrationInformation extends RegistrationInformation {
 
     @Override
     public boolean isDisplaySizeSupported(int width, int height) {
-        return (width == SampleControlSmartWatch2.getSupportedControlWidth(mContext) &&
-                height == SampleControlSmartWatch2 .getSupportedControlHeight(mContext));
+        return (width == GameControlSmartWatch2.getSupportedControlWidth(mContext) &&
+                height == GameControlSmartWatch2 .getSupportedControlHeight(mContext));
     }
 }
