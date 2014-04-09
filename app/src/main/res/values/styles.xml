@@ -5,9 +5,29 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/smart_watch_2_text_size_large</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_width">51px</item>
-        <item name="android:layout_height">40px</item>
+        <item name="android:layout_width">50px</item>
+        <item name="android:layout_height">39px</item>
         <item name="android:background">#fff</item>
-        <item name="android:layout_margin">2px</item>
+        <item name="android:layout_marginTop">2px</item>
+        <item name="android:layout_marginBottom">2px</item>
+        <item name="android:layout_marginLeft">2px</item>
+        <item name="android:layout_marginRight">2px</item>
     </style>
+
+    <style name="grid_cell_first_row" parent="grid_cell">
+        <item name="android:layout_marginTop">4px</item>
+    </style>
+
+    <style name="grid_cell_last_row" parent="grid_cell">
+        <item name="android:layout_marginBottom">4px</item>
+    </style>
+
+    <style name="grid_cell_first_column" parent="grid_cell">
+        <item name="android:layout_marginLeft">4px</item>
+    </style>
+
+    <style name="grid_cell_last_column" parent="grid_cell">
+        <item name="android:layout_marginRight">4px</item>
+    </style>
+
 </resources>
