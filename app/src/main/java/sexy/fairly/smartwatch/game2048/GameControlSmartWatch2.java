@@ -10,15 +10,20 @@ import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
 class GameControlSmartWatch2 extends ControlExtension {
-    private Handler mHandler;
-    private Game mGame;
-
     private static final int[][] FIELD_IDS = new int[][] {
         new int[] { R.id.field1_1, R.id.field1_2, R.id.field1_3, R.id.field1_4 },
         new int[] { R.id.field2_1, R.id.field2_2, R.id.field2_3, R.id.field2_4 },
         new int[] { R.id.field3_1, R.id.field3_2, R.id.field3_3, R.id.field3_4 },
         new int[] { R.id.field4_1, R.id.field4_2, R.id.field4_3, R.id.field4_4 },
     };
+
+    private static final int MENU_ITEM_0 = 0;
+    private static final int MENU_ITEM_1 = 1;
+
+    private Bundle[] mMenuItems = new Bundle[2];
+
+    private Handler mHandler;
+    private Game mGame;
 
     GameControlSmartWatch2(final String hostAppPackageName, final Context context,
             Handler handler) {
@@ -27,6 +32,18 @@ class GameControlSmartWatch2 extends ControlExtension {
             throw new IllegalArgumentException("handler == null");
         }
         mHandler = handler;
+
+        initializeMenu();
+    }
+
+    private void initializeMenu() {
+        mMenuItems[0] = new Bundle();
+        mMenuItems[0].putInt(Control.Intents.EXTRA_MENU_ITEM_ID, MENU_ITEM_0);
+        mMenuItems[0].putString(Control.Intents.EXTRA_MENU_ITEM_TEXT, "New game");
+
+        mMenuItems[1] = new Bundle();
+        mMenuItems[1].putInt(Control.Intents.EXTRA_MENU_ITEM_ID, MENU_ITEM_1);
+        mMenuItems[1].putString(Control.Intents.EXTRA_MENU_ITEM_TEXT, "Show score");
     }
 
     public static int getSupportedControlWidth(Context context) {
@@ -61,6 +78,24 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     @Override
+    public void onKey(final int action, final int keyCode, final long timeStamp) {
+        if (action == Control.Intents.KEY_ACTION_RELEASE &&
+                keyCode == Control.KeyCodes.KEYCODE_OPTIONS) {
+            showMenu(mMenuItems);
+        }
+    }
+
+    @Override
+    public void onMenuItemSelected(final int menuItem) {
+        switch (menuItem) {
+            case MENU_ITEM_0: {
+                startNewGame();
+                break;
+            }
+        }
+    }
+
+    @Override
     public void onSwipe(int direction) {
         switch (direction) {
             case Control.Intents.SWIPE_DIRECTION_UP: {
@@ -83,11 +118,15 @@ class GameControlSmartWatch2 extends ControlExtension {
         renderGame();
     }
 
+    private void startNewGame() {
+        mGame.newGame();
+        renderGame();
+    }
+
     @Override
     public void onObjectClick(ControlObjectClickEvent event) {
         if (event.getLayoutReference() == R.id.new_game) {
-            mGame.newGame();
-            renderGame();
+            startNewGame();
         }
     }
 
