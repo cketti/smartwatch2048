@@ -3,121 +3,105 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="@dimen/smart_watch_2_control_width"
                 android:layout_height="@dimen/smart_watch_2_control_height"
-                android:background="#888"
+                android:background="#bbada0"
                 tools:ignore="ContentDescription,PxUsage">
 
-    <TextView
+    <ImageView
             android:id="@+id/field1_1"
-            android:text="1"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="4px"
             style="@style/grid_cell_first_row"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field1_2"
-            android:text="2"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/field1_1"
             style="@style/grid_cell_first_row"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field1_3"
-            android:text="3"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/field1_2"
             style="@style/grid_cell_first_row"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field1_4"
-            android:text="4"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/field1_3"
             android:layout_marginRight="4px"
             style="@style/grid_cell_first_row"/>
     <!-- -->
-    <TextView
+    <ImageView
             android:id="@+id/field2_1"
-            android:text="1"
             android:layout_below="@id/field1_1"
             android:layout_alignParentLeft="true"
             style="@style/grid_cell_first_column"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field2_2"
-            android:text="2"
             android:layout_below="@id/field1_1"
             android:layout_toRightOf="@id/field2_1"
             style="@style/grid_cell"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field2_3"
-            android:text="3"
             android:layout_below="@id/field1_1"
             android:layout_toRightOf="@id/field2_2"
             style="@style/grid_cell"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field2_4"
-            android:text="4"
             android:layout_below="@id/field1_1"
             android:layout_toRightOf="@id/field2_3"
             style="@style/grid_cell_last_column"/>
     <!-- -->
-    <TextView
+    <ImageView
             android:id="@+id/field3_1"
-            android:text="1"
             android:layout_below="@id/field2_1"
             android:layout_alignParentLeft="true"
             style="@style/grid_cell_first_column"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field3_2"
-            android:text="2"
             android:layout_below="@id/field2_1"
             android:layout_toRightOf="@id/field3_1"
             style="@style/grid_cell"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field3_3"
-            android:text="3"
             android:layout_below="@id/field2_1"
             android:layout_toRightOf="@id/field3_2"
             style="@style/grid_cell"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field3_4"
-            android:text="4"
             android:layout_below="@id/field2_1"
             android:layout_toRightOf="@id/field3_3"
             style="@style/grid_cell_last_column"/>
 
     <!-- -->
-    <TextView
+    <ImageView
             android:id="@+id/field4_1"
-            android:text="1"
             android:layout_below="@id/field3_1"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="4px"
             style="@style/grid_cell_last_row"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field4_2"
-            android:text="2"
             android:layout_below="@id/field3_1"
             android:layout_toRightOf="@id/field4_1"
             style="@style/grid_cell_last_row"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field4_3"
-            android:text="3"
             android:layout_below="@id/field3_1"
             android:layout_toRightOf="@id/field4_2"
             style="@style/grid_cell_last_row"/>
 
-    <TextView
+    <ImageView
             android:id="@+id/field4_4"
-            android:text="4"
             android:layout_below="@id/field3_1"
             android:layout_toRightOf="@id/field4_3"
             android:layout_marginRight="4px"

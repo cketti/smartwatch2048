@@ -1,9 +1,11 @@
 package sexy.fairly.smartwatch.game2048;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
@@ -16,6 +18,24 @@ class GameControlSmartWatch2 extends ControlExtension {
         new int[] { R.id.field3_1, R.id.field3_2, R.id.field3_3, R.id.field3_4 },
         new int[] { R.id.field4_1, R.id.field4_2, R.id.field4_3, R.id.field4_4 },
     };
+
+    private static final SparseIntArray IMAGES = new SparseIntArray();
+    static {
+        IMAGES.put(0, R.drawable.cell_empty);
+        IMAGES.put(2, R.drawable.cell_2);
+        IMAGES.put(4, R.drawable.cell_4);
+        IMAGES.put(8, R.drawable.cell_8);
+        IMAGES.put(16, R.drawable.cell_16);
+        IMAGES.put(32, R.drawable.cell_32);
+        IMAGES.put(64, R.drawable.cell_64);
+        IMAGES.put(128, R.drawable.cell_128);
+        IMAGES.put(256, R.drawable.cell_256);
+        IMAGES.put(512, R.drawable.cell_512);
+        IMAGES.put(1024, R.drawable.cell_1024);
+        IMAGES.put(2048, R.drawable.cell_2048);
+        IMAGES.put(4096, R.drawable.cell_4096);
+        IMAGES.put(8192, R.drawable.cell_8192);
+    }
 
     private static final int MENU_ITEM_0 = 0;
     private static final int MENU_ITEM_1 = 1;
@@ -63,7 +83,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     public void onDestroy() {
         Log.d(SampleExtensionService.LOG_TAG, "SampleControlSmartWatch onDestroy");
         mHandler = null;
-    };
+    }
 
     @Override
     public void onResume() {
@@ -151,8 +171,10 @@ class GameControlSmartWatch2 extends ControlExtension {
                 int fieldRes = FIELD_IDS[y][x];
                 Bundle bundle = new Bundle();
                 bundle.putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, fieldRes);
-                String output = value == Grid.EMPTY_CELL ? "" : Integer.toString(value);
-                bundle.putString(Control.Intents.EXTRA_TEXT, output);
+                int imageRes = IMAGES.get(value);
+                Uri uri = Uri.parse("android.resource://" + mContext.getPackageName() + "/" +
+                        imageRes);
+                bundle.putString(Control.Intents.EXTRA_DATA_URI, uri.toString());
                 data[bundleIndex++] = bundle;
             }
         }
