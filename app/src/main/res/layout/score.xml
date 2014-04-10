@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="@dimen/smart_watch_2_control_width"
+                android:layout_height="@dimen/smart_watch_2_control_height"
+                android:background="@android:color/white"
+                tools:ignore="ContentDescription,PxUsage">
+
+    <TextView
+            android:id="@+id/score"
+            android:text="Score: 999999"
+            android:textSize="26px"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="58px"
+            android:paddingTop="15px"
+            android:paddingLeft="15px"
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            />
+
+    <TextView
+            android:id="@+id/best"
+            android:text="Best: 0"
+            android:textSize="26px"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="58px"
+            android:paddingBottom="15px"
+            android:paddingLeft="15px"
+            android:gravity="center_vertical"
+            android:layout_below="@id/score"
+            />
+
+    <TextView
+            android:id="@+id/continue_game"
+            android:clickable="true"
+            android:text="Continue"
+            android:textSize="@dimen/smart_watch_2_text_size_large"
+            android:gravity="center"
+            android:background="#bbb"
+            android:textColor="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="60px"/>
+</RelativeLayout>

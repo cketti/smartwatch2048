@@ -209,4 +209,8 @@ public class Game {
             this.y = y;
         }
     }
+
+    public int getScore() {
+        return mScore;
+    }
 }

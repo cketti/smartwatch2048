@@ -42,13 +42,15 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     private static final int MENU_ITEM_0 = 0;
     private static final int MENU_ITEM_1 = 1;
+    private GameState mLastGameState;
 
     public static enum GameState {
         RUNNING,
         LOST_WAIT,
         LOST,
         WON_WAIT,
-        WON
+        WON,
+        SCORE
     }
 
     private Bundle[] mMenuItems = new Bundle[2];
@@ -125,12 +127,16 @@ class GameControlSmartWatch2 extends ControlExtension {
                 startNewGame();
                 break;
             }
+            case MENU_ITEM_1: {
+                showScore();
+                break;
+            }
         }
     }
 
     @Override
     public void onSwipe(int direction) {
-        if (!mGame.isGameRunning()) {
+        if (mGameState != GameState.RUNNING) {
             return;
         }
 
@@ -190,8 +196,16 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onObjectClick(ControlObjectClickEvent event) {
-        if (event.getLayoutReference() == R.id.new_game) {
-            startNewGame();
+        switch (event.getLayoutReference()) {
+            case R.id.new_game: {
+                startNewGame();
+                break;
+            }
+            case R.id.continue_game: {
+                mGameState = mLastGameState;
+                renderGame();
+                break;
+            }
         }
     }
 
@@ -211,8 +225,26 @@ class GameControlSmartWatch2 extends ControlExtension {
                 showLayout(R.layout.you_lost, null);
                 break;
             }
+            case SCORE: {
+                renderScore();
+                break;
+            }
         }
+    }
 
+    private void showScore() {
+        mLastGameState = mGameState;
+        mGameState = GameState.SCORE;
+        renderGame();
+    }
+
+    private void renderScore() {
+        Bundle[] data = new Bundle[1];
+        data[0] = new Bundle();
+        data[0].putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, R.id.score);
+        data[0].putString(Control.Intents.EXTRA_TEXT, "Score: " + mGame.getScore());
+
+        showLayout(R.layout.score, data);
     }
 
     private void renderGrid() {
