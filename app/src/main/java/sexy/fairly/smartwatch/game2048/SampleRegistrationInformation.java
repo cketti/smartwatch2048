@@ -80,11 +80,11 @@ public class SampleRegistrationInformation extends RegistrationInformation {
 
     @Override
     public ContentValues getExtensionRegistrationConfiguration() {
-        String iconHostapp = ExtensionUtils.getUriString(mContext, R.drawable.icon);
+        String iconHostapp = ExtensionUtils.getUriString(mContext, R.drawable.ic_2048);
         String iconExtension = ExtensionUtils
-                .getUriString(mContext, R.drawable.icon_extension);
+                .getUriString(mContext, R.drawable.ic_2048_36x36);
         String iconExtension48 = ExtensionUtils
-                .getUriString(mContext, R.drawable.icon_extension48);
+                .getUriString(mContext, R.drawable.ic_2048_48x48);
 
         ContentValues values = new ContentValues();
 
