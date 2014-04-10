@@ -12,6 +12,9 @@ import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
 class GameControlSmartWatch2 extends ControlExtension {
+    private static final long WINNING_TIMEOUT = 800;
+    private static final long LOSING_TIMEOUT = 2 * 2000;
+
     private static final int[][] FIELD_IDS = new int[][] {
         new int[] { R.id.field1_1, R.id.field1_2, R.id.field1_3, R.id.field1_4 },
         new int[] { R.id.field2_1, R.id.field2_2, R.id.field2_3, R.id.field2_4 },
@@ -40,10 +43,19 @@ class GameControlSmartWatch2 extends ControlExtension {
     private static final int MENU_ITEM_0 = 0;
     private static final int MENU_ITEM_1 = 1;
 
+    public static enum GameState {
+        RUNNING,
+        LOST_WAIT,
+        LOST,
+        WON_WAIT,
+        WON
+    }
+
     private Bundle[] mMenuItems = new Bundle[2];
 
     private Handler mHandler;
     private Game mGame;
+    private GameState mGameState;
 
     GameControlSmartWatch2(final String hostAppPackageName, final Context context,
             Handler handler) {
@@ -77,6 +89,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     @Override
     public void onStart() {
         mGame = new Game();
+        mGameState = GameState.RUNNING;
     }
 
     @Override
@@ -117,6 +130,10 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onSwipe(int direction) {
+        if (!mGame.isGameRunning()) {
+            return;
+        }
+
         switch (direction) {
             case Control.Intents.SWIPE_DIRECTION_UP: {
                 mGame.move(Game.Direction.UP);
@@ -135,11 +152,39 @@ class GameControlSmartWatch2 extends ControlExtension {
                 break;
             }
         }
+
+        updateGameState();
+
         renderGame();
+    }
+
+    private void updateGameState() {
+        if (!mGame.isGameRunning()) {
+            if (mGame.isGameWon()) {
+                mGameState = GameState.WON_WAIT;
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameState = GameState.WON;
+                        renderGame();
+                    }
+                }, WINNING_TIMEOUT);
+            } else {
+                mGameState = GameState.LOST_WAIT;
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameState = GameState.LOST;
+                        renderGame();
+                    }
+                }, LOSING_TIMEOUT);
+            }
+        }
     }
 
     private void startNewGame() {
         mGame.newGame();
+        mGameState = GameState.RUNNING;
         renderGame();
     }
 
@@ -151,13 +196,23 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     private void renderGame() {
-        if (mGame.isGameRunning()) {
-            renderGrid();
-        } else if (mGame.isGameWon()) {
-            showLayout(R.layout.you_won, null);
-        } else {
-            showLayout(R.layout.you_lost, null);
+        switch (mGameState) {
+            case RUNNING:
+            case LOST_WAIT:
+            case WON_WAIT: {
+                renderGrid();
+                break;
+            }
+            case WON: {
+                showLayout(R.layout.you_won, null);
+                break;
+            }
+            case LOST: {
+                showLayout(R.layout.you_lost, null);
+                break;
+            }
         }
+
     }
 
     private void renderGrid() {
