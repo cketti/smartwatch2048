@@ -21,6 +21,7 @@ public class Game {
         mScore = 0;
         mGrid = new Grid(4);
         addRandomTile();
+        addRandomTile();
         mGameWon = false;
         mGameRunning = true;
     }
