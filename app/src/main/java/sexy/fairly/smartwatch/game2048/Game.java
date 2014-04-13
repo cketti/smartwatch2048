@@ -8,12 +8,14 @@ import java.util.Map;
 
 public class Game {
 
+    private final InsertCellCallback mCallback;
     private Grid mGrid;
     private int mScore;
     private boolean mGameRunning;
     private boolean mGameWon;
 
-    public Game() {
+    public Game(InsertCellCallback callback) {
+        mCallback = callback;
         newGame();
     }
 
@@ -99,13 +101,26 @@ public class Game {
         }
 
         if (moved) {
-            addRandomTile();
-
-            if (!movesAvailable()) {
-                mGameRunning = false;
-                System.out.println("You lose!");
+            if (mCallback != null) {
+                mCallback.insertCell();
+            } else {
+                addRandomTile();
             }
+
+            gameOverCheck();
         }
+    }
+
+    private void gameOverCheck() {
+        if (!movesAvailable()) {
+            mGameRunning = false;
+            System.out.println("You lose!");
+        }
+    }
+
+    public void insertTile() {
+        addRandomTile();
+        gameOverCheck();
     }
 
     private boolean movesAvailable() {
@@ -213,5 +228,9 @@ public class Game {
 
     public int getScore() {
         return mScore;
+    }
+
+    public static interface InsertCellCallback {
+        void insertCell();
     }
 }
