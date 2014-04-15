@@ -16,7 +16,7 @@ import java.util.Queue;
 
 class GameControlSmartWatch2 extends ControlExtension {
     private static final long WINNING_TIMEOUT = 800;
-    private static final long LOSING_TIMEOUT = 2 * 2000;
+    private static final long LOSING_TIMEOUT = 1500;
     private static final long NEW_TILE_TIMEOUT = 180;
 
     private static final int[][] FIELD_IDS = new int[][] {
