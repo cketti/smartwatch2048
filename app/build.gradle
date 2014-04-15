@@ -14,8 +14,13 @@ android {
     compileSdkVersion 19
     buildToolsVersion "19.0.3"
 
+    repositories {
+        mavenCentral()
+    }
+
     dependencies {
         compile project(':SmartExtensionUtils')
+        compile 'com.j256.ormlite:ormlite-android:4.48'
     }
 
     signingConfigs {

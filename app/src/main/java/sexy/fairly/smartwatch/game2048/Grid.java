@@ -8,12 +8,30 @@ public class Grid {
     public Tile[][] mRows;
 
     public Grid(int size) {
+        createRows(size);
+        empty();
+    }
+
+    public Grid(int[][] cells) {
+        int size = cells.length;
+        createRows(size);
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                int value = cells[y][x];
+                if (value != 0) {
+                    mRows[y][x] = new Tile(x, y, value);
+                }
+            }
+        }
+    }
+
+    private void createRows(int size) {
         mRows = new Tile[size][];
         for (int i = 0; i < size; i++) {
             Tile[] row = new Tile[size];
             mRows[i] = row;
         }
-        empty();
     }
 
     private void empty() {

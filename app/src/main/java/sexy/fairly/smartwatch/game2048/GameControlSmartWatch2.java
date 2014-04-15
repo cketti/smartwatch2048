@@ -1,9 +1,11 @@
 package sexy.fairly.smartwatch.game2048;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.util.SparseIntArray;
 
@@ -13,6 +15,8 @@ import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClic
 
 import java.util.LinkedList;
 import java.util.Queue;
+
+import sexy.fairly.smartwatch.game2048.storage.State;
 
 class GameControlSmartWatch2 extends ControlExtension {
     private static final long WINNING_TIMEOUT = 800;
@@ -50,6 +54,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private boolean mQueueMove = false;
 
     public static enum GameState {
+        LOADING,
         RUNNING,
         LOST_WAIT,
         LOST,
@@ -106,13 +111,21 @@ class GameControlSmartWatch2 extends ControlExtension {
                         mGame.insertTile();
                         renderGame();
 
+                        saveState();
+
                         // timeout?
                         handleNextMove();
                     }
                 }, NEW_TILE_TIMEOUT);
             }
         });
-        mGameState = GameState.RUNNING;
+
+        mGameState = GameState.LOADING;
+        Intent intent = new Intent(mContext, PersistenceService.class);
+        intent.setAction(PersistenceService.ACTION_READ);
+        intent.putExtra(PersistenceService.EXTRA_RESULT_RECEIVER,
+                new StateResultReceiver(mHandler));
+        mContext.startService(intent);
     }
 
     @Override
@@ -211,6 +224,13 @@ class GameControlSmartWatch2 extends ControlExtension {
         renderGame();
     }
 
+    private void saveState() {
+        Intent intent = new Intent(mContext, PersistenceService.class);
+        intent.setAction(PersistenceService.ACTION_SAVE);
+        intent.putExtra(PersistenceService.EXTRA_GRID_STATE, new State(mGame.getGrid()));
+        mContext.startService(intent);
+    }
+
     private void updateGameState() {
         if (!mGame.isGameRunning()) {
             if (mGame.isGameWon()) {
@@ -238,6 +258,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private void startNewGame() {
         mGame.newGame();
         mGameState = GameState.RUNNING;
+        saveState();
         renderGame();
     }
 
@@ -258,6 +279,10 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     private void renderGame() {
         switch (mGameState) {
+            case LOADING: {
+                showLayout(R.layout.waiting, null);
+                break;
+            }
             case RUNNING:
             case LOST_WAIT:
             case WON_WAIT: {
@@ -314,5 +339,27 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
 
         showLayout(R.layout.game_field, data);
+    }
+
+    public class StateResultReceiver extends ResultReceiver {
+
+        public StateResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            mGameState = GameState.RUNNING;
+
+            State state = resultData.getParcelable(PersistenceService.EXTRA_GRID_STATE);
+            if (state != null) {
+                mGame.setGrid(state.getCells());
+                updateGameState();
+            } else {
+                saveState();
+            }
+
+            renderGame();
+        }
     }
 }

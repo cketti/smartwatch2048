@@ -28,6 +28,11 @@ public class Game {
         mGameRunning = true;
     }
 
+    public void setGrid(int[][] cells) {
+        mGrid = new Grid(cells);
+        gameOverCheck();
+    }
+
     public boolean isGameRunning() {
         return mGameRunning;
     }
@@ -114,6 +119,7 @@ public class Game {
     private void gameOverCheck() {
         if (!movesAvailable()) {
             mGameRunning = false;
+            mGameWon = false;
             System.out.println("You lose!");
         }
     }

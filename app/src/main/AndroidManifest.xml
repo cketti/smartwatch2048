@@ -47,5 +47,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".PersistenceService" />
+
     </application>
 </manifest>
