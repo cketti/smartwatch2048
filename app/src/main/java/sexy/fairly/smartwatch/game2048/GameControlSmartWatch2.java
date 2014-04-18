@@ -2,7 +2,6 @@ package sexy.fairly.smartwatch.game2048;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
+import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
@@ -331,9 +331,8 @@ class GameControlSmartWatch2 extends ControlExtension {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, fieldRes);
                 int imageRes = IMAGES.get(value);
-                Uri uri = Uri.parse("android.resource://" + mContext.getPackageName() + "/" +
-                        imageRes);
-                bundle.putString(Control.Intents.EXTRA_DATA_URI, uri.toString());
+                bundle.putString(Control.Intents.EXTRA_DATA_URI,
+                        ExtensionUtils.getUriString(mContext, imageRes));
                 data[bundleIndex++] = bundle;
             }
         }
