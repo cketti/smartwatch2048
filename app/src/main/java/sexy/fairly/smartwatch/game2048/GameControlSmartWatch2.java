@@ -109,6 +109,7 @@ class GameControlSmartWatch2 extends ControlExtension {
                     @Override
                     public void run() {
                         mGame.insertTile();
+                        updateGameState();
                         renderGame();
 
                         saveState();
