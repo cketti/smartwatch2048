@@ -19,10 +19,13 @@ public class State implements Parcelable {
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     private int[][] cells;
 
+    @DatabaseField
+    private int score;
 
     public State() {}
 
     public State(Parcel in) {
+        score = in.readInt();
         int size = in.readInt();
         cells = new int[size][];
         for (int i = 0; i < size; i++) {
@@ -30,7 +33,8 @@ public class State implements Parcelable {
         }
     }
 
-    public State(Grid grid) {
+    public State(Grid grid, int score) {
+        this.score = score;
         int size = grid.getSize();
         cells = new int[size][];
 
@@ -47,6 +51,10 @@ public class State implements Parcelable {
         return cells;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -54,6 +62,7 @@ public class State implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(score);
         dest.writeInt(cells.length);
         for (int[] cell : cells) {
             dest.writeIntArray(cell);

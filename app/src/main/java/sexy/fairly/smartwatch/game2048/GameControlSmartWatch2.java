@@ -228,7 +228,8 @@ class GameControlSmartWatch2 extends ControlExtension {
     private void saveState() {
         Intent intent = new Intent(mContext, PersistenceService.class);
         intent.setAction(PersistenceService.ACTION_SAVE);
-        intent.putExtra(PersistenceService.EXTRA_GRID_STATE, new State(mGame.getGrid()));
+        intent.putExtra(PersistenceService.EXTRA_GRID_STATE,
+                new State(mGame.getGrid(), mGame.getScore()));
         mContext.startService(intent);
     }
 
@@ -354,6 +355,7 @@ class GameControlSmartWatch2 extends ControlExtension {
             State state = resultData.getParcelable(PersistenceService.EXTRA_GRID_STATE);
             if (state != null) {
                 mGame.setGrid(state.getCells());
+                mGame.setScore(state.getScore());
                 updateGameState();
             } else {
                 saveState();

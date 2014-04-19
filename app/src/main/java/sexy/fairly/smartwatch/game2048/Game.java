@@ -215,6 +215,10 @@ public class Game {
         return VECTOR_MAP.get(direction);
     }
 
+    public void setScore(int score) {
+        mScore = score;
+    }
+
     public static enum Direction {
         UP,
         DOWN,
