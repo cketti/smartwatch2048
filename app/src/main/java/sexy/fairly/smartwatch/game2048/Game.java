@@ -11,6 +11,7 @@ public class Game {
     private final InsertCellCallback mCallback;
     private Grid mGrid;
     private int mScore;
+    private int mBestScore;
     private boolean mGameRunning;
     private boolean mGameWon;
 
@@ -86,7 +87,7 @@ public class Game {
                         tile.x = posNext.x;
                         tile.y = posNext.y;
 
-                        mScore += merged.value;
+                        setScore(mScore + merged.value);
 
                         if (merged.value == 2048) {
                             mGameRunning = false;
@@ -219,6 +220,9 @@ public class Game {
 
     public void setScore(int score) {
         mScore = score;
+        if (mScore > mBestScore) {
+            mBestScore = mScore;
+        }
     }
 
     public static enum Direction {
@@ -240,6 +244,14 @@ public class Game {
 
     public int getScore() {
         return mScore;
+    }
+
+    public int getBestScore() {
+        return mBestScore;
+    }
+
+    public void setBestScore(int score) {
+        mBestScore = score;
     }
 
     public static interface InsertCellCallback {

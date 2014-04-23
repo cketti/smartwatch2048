@@ -204,10 +204,15 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     private void saveState() {
+        int score = mGame.getScore();
+        int bestScore = mGame.getBestScore();
+
         Intent intent = new Intent(mContext, PersistenceService.class);
         intent.setAction(PersistenceService.ACTION_SAVE);
-        intent.putExtra(PersistenceService.EXTRA_GRID_STATE,
-                new State(mGame.getGrid(), mGame.getScore()));
+        intent.putExtra(PersistenceService.EXTRA_GRID_STATE, new State(mGame.getGrid(), score));
+        if (score == bestScore) {
+            intent.putExtra(PersistenceService.EXTRA_BEST_SCORE, bestScore);
+        }
         mContext.startService(intent);
     }
 
@@ -291,10 +296,13 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     private void renderScore() {
-        Bundle[] data = new Bundle[1];
+        Bundle[] data = new Bundle[2];
         data[0] = new Bundle();
         data[0].putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, R.id.score);
         data[0].putString(Control.Intents.EXTRA_TEXT, "Score: " + mGame.getScore());
+        data[1] = new Bundle();
+        data[1].putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, R.id.best);
+        data[1].putString(Control.Intents.EXTRA_TEXT, "Best score: " + mGame.getBestScore());
 
         showLayout(R.layout.score, data);
     }
@@ -334,6 +342,10 @@ class GameControlSmartWatch2 extends ControlExtension {
             if (state != null) {
                 mGame.setGrid(state.getCells());
                 mGame.setScore(state.getScore());
+
+                int bestScore = resultData.getInt(PersistenceService.EXTRA_BEST_SCORE);
+                mGame.setBestScore(bestScore);
+
                 updateGameState();
             } else {
                 saveState();
