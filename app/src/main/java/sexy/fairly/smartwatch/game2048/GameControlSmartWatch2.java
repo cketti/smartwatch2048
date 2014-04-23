@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
@@ -126,20 +125,12 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onDestroy() {
-        Log.d(SampleExtensionService.LOG_TAG, "SampleControlSmartWatch onDestroy");
         mHandler = null;
     }
 
     @Override
     public void onResume() {
-        Log.d(SampleExtensionService.LOG_TAG, "Starting animation");
-
         renderGame();
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(SampleExtensionService.LOG_TAG, "onPause");
     }
 
     @Override

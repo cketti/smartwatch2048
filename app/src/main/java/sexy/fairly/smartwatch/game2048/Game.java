@@ -57,7 +57,6 @@ public class Game {
             return false;
         }
 
-        System.out.println("Move: " + direction);
         boolean moved = false;
 
         Vector vector = getVector(direction);
@@ -92,7 +91,6 @@ public class Game {
                         if (merged.value == 2048) {
                             mGameRunning = false;
                             mGameWon = true;
-                            System.out.println("You won!");
                         }
 
                     } else {
@@ -123,7 +121,6 @@ public class Game {
         if (!movesAvailable()) {
             mGameRunning = false;
             mGameWon = false;
-            System.out.println("You lose!");
         }
     }
 
