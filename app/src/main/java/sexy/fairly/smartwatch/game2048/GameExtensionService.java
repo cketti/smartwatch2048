@@ -7,17 +7,17 @@ import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.registration.DeviceInfoHelper;
 import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
 
-public class SampleExtensionService extends ExtensionService {
+public class GameExtensionService extends ExtensionService {
 
     public static final String EXTENSION_KEY = "com.sonymobile.smartconnect.extension.samplecontrol.key";
 
-    public SampleExtensionService() {
+    public GameExtensionService() {
         super(EXTENSION_KEY);
     }
 
     @Override
     protected RegistrationInformation getRegistrationInformation() {
-        return new SampleRegistrationInformation(this);
+        return new GameRegistrationInformation(this);
     }
 
     @Override

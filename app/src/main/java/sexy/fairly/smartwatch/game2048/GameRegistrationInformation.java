@@ -8,11 +8,11 @@ import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
 
 
-public class SampleRegistrationInformation extends RegistrationInformation {
+public class GameRegistrationInformation extends RegistrationInformation {
 
     final Context mContext;
 
-    protected SampleRegistrationInformation(Context context) {
+    protected GameRegistrationInformation(Context context) {
         if (context == null) {
             throw new IllegalArgumentException("context == null");
         }
@@ -55,12 +55,12 @@ public class SampleRegistrationInformation extends RegistrationInformation {
         ContentValues values = new ContentValues();
 
         values.put(Registration.ExtensionColumns.CONFIGURATION_ACTIVITY,
-                SamplePreferenceActivity.class.getName());
+                GamePreferenceActivity.class.getName());
         values.put(Registration.ExtensionColumns.CONFIGURATION_TEXT,
                 mContext.getString(R.string.configuration_text));
         values.put(Registration.ExtensionColumns.NAME, mContext.getString(R.string.extension_name));
         values.put(Registration.ExtensionColumns.EXTENSION_KEY,
-                SampleExtensionService.EXTENSION_KEY);
+                GameExtensionService.EXTENSION_KEY);
         values.put(Registration.ExtensionColumns.HOST_APP_ICON_URI, iconHostapp);
         values.put(Registration.ExtensionColumns.EXTENSION_ICON_URI, iconExtension);
         values.put(Registration.ExtensionColumns.EXTENSION_48PX_ICON_URI, iconExtension48);

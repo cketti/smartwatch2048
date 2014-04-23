@@ -13,7 +13,7 @@ import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
 
-public class SamplePreferenceActivity extends PreferenceActivity {
+public class GamePreferenceActivity extends PreferenceActivity {
 
     private static final int DIALOG_READ_ME = 1;
 

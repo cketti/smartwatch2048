@@ -8,7 +8,7 @@ public class ExtensionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        intent.setClass(context, SampleExtensionService.class);
+        intent.setClass(context, GameExtensionService.class);
         context.startService(intent);
     }
 }
