@@ -25,7 +25,7 @@
     <string name="winning">You won!</string>
     <string name="button_label_new_game">New Game</string>
     <string name="score_format">Score: %d</string>
-    <string name="best_score_format">Best score: %d</string>
+    <string name="best_score_format">Best: %d</string>
     <string name="menu_new_game">New game</string>
     <string name="menu_show_score">Show score</string>
 </resources>
