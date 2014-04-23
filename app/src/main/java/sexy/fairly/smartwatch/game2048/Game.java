@@ -51,9 +51,9 @@ public class Game {
         mGrid.insert(cell, value);
     }
 
-    public void move(Direction direction) {
+    public boolean move(Direction direction) {
         if (!mGameRunning) {
-            return;
+            return false;
         }
 
         System.out.println("Move: " + direction);
@@ -114,6 +114,8 @@ public class Game {
 
             gameOverCheck();
         }
+
+        return moved;
     }
 
     private void gameOverCheck() {

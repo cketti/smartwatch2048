@@ -13,9 +13,6 @@ import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import sexy.fairly.smartwatch.game2048.storage.State;
 
 class GameControlSmartWatch2 extends ControlExtension {
@@ -51,7 +48,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private static final int MENU_ITEM_0 = 0;
     private static final int MENU_ITEM_1 = 1;
     private GameState mLastGameState;
-    private boolean mQueueMove = false;
+    private boolean mMoveInProgress = false;
 
     public static enum GameState {
         LOADING,
@@ -68,7 +65,6 @@ class GameControlSmartWatch2 extends ControlExtension {
     private Handler mHandler;
     private Game mGame;
     private GameState mGameState;
-    private Queue<Game.Direction> mMoveQueue = new LinkedList<Game.Direction>();
 
     GameControlSmartWatch2(final String hostAppPackageName, final Context context,
             Handler handler) {
@@ -104,7 +100,6 @@ class GameControlSmartWatch2 extends ControlExtension {
         mGame = new Game(new Game.InsertCellCallback() {
             @Override
             public void insertCell() {
-                mQueueMove = true;
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -113,9 +108,7 @@ class GameControlSmartWatch2 extends ControlExtension {
                         renderGame();
 
                         saveState();
-
-                        // timeout?
-                        handleNextMove();
+                        mMoveInProgress = false;
                     }
                 }, NEW_TILE_TIMEOUT);
             }
@@ -171,7 +164,7 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onSwipe(int direction) {
-        if (mGameState != GameState.RUNNING) {
+        if (mGameState != GameState.RUNNING || mMoveInProgress) {
             return;
         }
 
@@ -198,29 +191,14 @@ class GameControlSmartWatch2 extends ControlExtension {
             }
         }
 
-        if (mQueueMove) {
-            mMoveQueue.add(gameDirection);
-        } else {
-            performMove(gameDirection);
-        }
-    }
-
-    private void handleNextMove() {
-        if (mMoveQueue.isEmpty()) {
-            mQueueMove = false;
-            return;
-        }
-
-        Game.Direction direction = mMoveQueue.remove();
-        performMove(direction);
-
-        if (mMoveQueue.isEmpty()) {
-            mQueueMove = false;
-        }
+        performMove(gameDirection);
     }
 
     private void performMove(Game.Direction direction) {
-        mGame.move(direction);
+        mMoveInProgress = true;
+        if (!mGame.move(direction)) {
+            mMoveInProgress = false;
+        }
         updateGameState();
         renderGame();
     }
