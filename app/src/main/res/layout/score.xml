@@ -8,7 +8,7 @@
 
     <TextView
             android:id="@+id/score"
-            android:text="Score: 999999"
+            tools:text="Score: 666"
             android:textSize="26px"
             android:textColor="@android:color/black"
             android:layout_width="match_parent"
@@ -21,7 +21,7 @@
 
     <TextView
             android:id="@+id/best"
-            android:text="Best: 0"
+            tools:text="Best: 999999"
             android:textSize="26px"
             android:textColor="@android:color/black"
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
     <TextView
             android:id="@+id/continue_game"
             android:clickable="true"
-            android:text="Continue"
+            android:text="@string/button_label_continue"
             android:textSize="@dimen/smart_watch_2_text_size_large"
             android:gravity="center"
             android:background="#bbb"

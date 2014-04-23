@@ -80,11 +80,13 @@ class GameControlSmartWatch2 extends ControlExtension {
     private void initializeMenu() {
         mMenuItems[0] = new Bundle();
         mMenuItems[0].putInt(Control.Intents.EXTRA_MENU_ITEM_ID, MENU_ITEM_0);
-        mMenuItems[0].putString(Control.Intents.EXTRA_MENU_ITEM_TEXT, "New game");
+        mMenuItems[0].putString(Control.Intents.EXTRA_MENU_ITEM_TEXT,
+                mContext.getString(R.string.menu_new_game));
 
         mMenuItems[1] = new Bundle();
         mMenuItems[1].putInt(Control.Intents.EXTRA_MENU_ITEM_ID, MENU_ITEM_1);
-        mMenuItems[1].putString(Control.Intents.EXTRA_MENU_ITEM_TEXT, "Show score");
+        mMenuItems[1].putString(Control.Intents.EXTRA_MENU_ITEM_TEXT,
+                mContext.getString(R.string.menu_show_score));
     }
 
     public static int getSupportedControlWidth(Context context) {
@@ -299,10 +301,12 @@ class GameControlSmartWatch2 extends ControlExtension {
         Bundle[] data = new Bundle[2];
         data[0] = new Bundle();
         data[0].putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, R.id.score);
-        data[0].putString(Control.Intents.EXTRA_TEXT, "Score: " + mGame.getScore());
+        data[0].putString(Control.Intents.EXTRA_TEXT,
+                mContext.getString(R.string.score_format, mGame.getScore()));
         data[1] = new Bundle();
         data[1].putInt(Control.Intents.EXTRA_LAYOUT_REFERENCE, R.id.best);
-        data[1].putString(Control.Intents.EXTRA_TEXT, "Best score: " + mGame.getBestScore());
+        data[1].putString(Control.Intents.EXTRA_TEXT,
+                mContext.getString(R.string.best_score_format, mGame.getBestScore()));
 
         showLayout(R.layout.score, data);
     }
