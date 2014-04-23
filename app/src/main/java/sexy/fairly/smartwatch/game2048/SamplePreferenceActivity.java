@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -23,16 +25,32 @@ public class SamplePreferenceActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preference);
 
         // Handle read me
-        Preference preference = findPreference(getText(R.string.preference_key_read_me));
-        preference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        findPreference(getText(R.string.preference_key_read_me))
+                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                showDialog(DIALOG_READ_ME);
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        showDialog(DIALOG_READ_ME);
+                        return true;
+                    }
+                });
 
+        findPreference(getText(R.string.preference_key_support))
+                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_SENDTO);
+                            intent.setData(Uri.parse("mailto:" + getString(R.string.support_email) +
+                                "?subject=" + getString(R.string.support_subject)));
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            // Ignore
+                        }
+                        return true;
+                    }
+                });
     }
 
     @Override
@@ -54,12 +72,12 @@ public class SamplePreferenceActivity extends PreferenceActivity {
      * @return the Dialog
      */
     private Dialog createReadMeDialog() {
-        // TODO: Update text
-        // TODO: Discuss manifest version code and number
+        String message = getString(R.string.preference_option_read_me_txt) +
+                getString(R.string.preference_option_read_me_txt_free);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.preference_option_read_me_txt)
+        builder.setMessage(message)
                 .setTitle(R.string.preference_option_read_me)
-                .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton(android.R.string.ok, new OnClickListener() {
 
                     @Override
