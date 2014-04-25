@@ -13,6 +13,8 @@
     <!-- Menu options shown in preferences -->
     <string name="preference_option_read_me">Instructions</string>
     <string name="preference_option_support">Support</string>
+    <string name="preference_option_buy_full_version">Buy full version</string>
+    <string name="preference_option_bought_full_version">You bought the full version!</string>
 
     <!-- Read me text shown in dialog -->
     <string name="preference_option_read_me_txt">Swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
@@ -28,4 +30,10 @@
     <string name="best_score_format">Best: %d</string>
     <string name="menu_new_game">New game</string>
     <string name="menu_show_score">Show score</string>
+    <string name="nicely_done_message">A 512 tile. Nicely done!</string>
+    <string name="end_of_trial_message">Unfortunately, this marks the end of the free trial. To continue to 2048 please buy the game.</string>
+    <string name="get_full_version">Get full version</string>
+    <string name="continue_purchase_process_on_phone">Please continue the purchase process on your Android device.\nNote that you can also start a new game if you don\'t want to buy the app just yet.</string>
+    <string name="activity_buy_game_label">Buy full version</string>
+    <string name="thanks_for_buying_message">Thank you for buying the full version!\n\nYou can now continue playing the game on your SmartWatch.</string>
 </resources>

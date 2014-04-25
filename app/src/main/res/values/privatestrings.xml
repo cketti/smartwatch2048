@@ -3,6 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="preference_key_read_me">preference_key_read_me</string>
     <string name="preference_key_support">preference_key_support</string>
+    <string name="preference_key_buy_full_version">preference_key_buy_full_version</string>
 
     <string name="support_email">maxint.apps@gmail.com</string>
     <string name="support_subject">2048 for SmartWatch 2</string>

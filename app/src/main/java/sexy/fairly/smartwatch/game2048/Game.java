@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Game {
+    public static final int FREE_LIMIT = 512;
 
     private final InsertCellCallback mCallback;
     private Grid mGrid;
@@ -14,6 +15,8 @@ public class Game {
     private int mBestScore;
     private boolean mGameRunning;
     private boolean mGameWon;
+    private boolean mFullVersion = false;
+    private boolean mFreeLimitReached;
 
     public Game(InsertCellCallback callback) {
         mCallback = callback;
@@ -22,6 +25,7 @@ public class Game {
 
     public void newGame() {
         mScore = 0;
+        mFreeLimitReached = false;
         mGrid = new Grid(4);
         addRandomTile();
         addRandomTile();
@@ -31,6 +35,9 @@ public class Game {
 
     public void setGrid(int[][] cells) {
         mGrid = new Grid(cells);
+        if (!mFullVersion) {
+            freeLimitCheck();
+        }
         gameOverCheck();
     }
 
@@ -88,6 +95,11 @@ public class Game {
 
                         setScore(mScore + merged.value);
 
+                        if (!mFullVersion && !mFreeLimitReached && merged.value == FREE_LIMIT) {
+                            mFreeLimitReached = true;
+
+                        }
+
                         if (merged.value == 2048) {
                             mGameRunning = false;
                             mGameWon = true;
@@ -115,6 +127,21 @@ public class Game {
         }
 
         return moved;
+    }
+
+    private void freeLimitCheck() {
+        mFreeLimitReached = false;
+        int gridSize = mGrid.getSize();
+
+        for (int y = 0; y < gridSize; y++) {
+            for (int x = 0; x < gridSize; x++) {
+                int value = mGrid.valueAt(x, y);
+                if (value >= FREE_LIMIT) {
+                    mFreeLimitReached = true;
+                    return;
+                }
+            }
+        }
     }
 
     private void gameOverCheck() {
@@ -249,6 +276,14 @@ public class Game {
 
     public void setBestScore(int score) {
         mBestScore = score;
+    }
+
+    public boolean isFreeLimitReached() {
+        return !mFullVersion && mFreeLimitReached;
+    }
+
+    public void setFullVersion(boolean fullVersion) {
+        mFullVersion = fullVersion;
     }
 
     public static interface InsertCellCallback {

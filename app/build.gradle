@@ -48,3 +48,5 @@ if (project.hasProperty('storeFile')) {
 if (project.hasProperty('storePassword')) {
     android.signingConfigs.release.storePassword = storePassword
 }
+
+android.buildTypes.debug.signingConfig = android.signingConfigs.release

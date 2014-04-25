@@ -13,8 +13,15 @@ import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
 import sexy.fairly.smartwatch.game2048.storage.State;
+import sexy.fairly.smartwatch.game2048.util.IabHelper;
+import sexy.fairly.smartwatch.game2048.util.IabResult;
+import sexy.fairly.smartwatch.game2048.util.Inventory;
+import sexy.fairly.smartwatch.game2048.util.Purchase;
 
 class GameControlSmartWatch2 extends ControlExtension {
+    public static final int ACTION_PURCHASE_COMPLETE = 1;
+    public static final int ACTION_PURCHASE_CANCELLED = 2;
+
     private static final long WINNING_TIMEOUT = 800;
     private static final long LOSING_TIMEOUT = 1500;
     private static final long NEW_TILE_TIMEOUT = 180;
@@ -48,6 +55,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private static final int MENU_ITEM_1 = 1;
     private GameState mLastGameState;
     private boolean mMoveInProgress = false;
+    private IabHelper mHelper;
 
     public static enum GameState {
         LOADING,
@@ -56,7 +64,10 @@ class GameControlSmartWatch2 extends ControlExtension {
         LOST,
         WON_WAIT,
         WON,
-        SCORE
+        SCORE,
+        FREE_LIMIT_REACHED,
+        PURCHASE_IN_PROGRESS,
+        PURCHASE_CANCELLED
     }
 
     private Bundle[] mMenuItems = new Bundle[2];
@@ -74,7 +85,44 @@ class GameControlSmartWatch2 extends ControlExtension {
         mHandler = handler;
 
         initializeMenu();
+        startIabHelper(context);
     }
+
+    private void startIabHelper(Context context) {
+        mHelper = new IabHelper(context, BuyGameActivity.LICENSE_PUBLIC_KEY);
+        mHelper.enableDebugLogging(BuyGameActivity.DEBUG);
+
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    return;
+                }
+
+                if (mHelper == null) return;
+
+                mHelper.queryInventoryAsync(mGotInventoryListener);
+            }
+        });
+    }
+
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener =
+            new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            if (mHelper == null) return;
+
+            if (result.isFailure()) {
+                return;
+            }
+
+            Purchase premiumPurchase = inventory.getPurchase(BuyGameActivity.SKU_FULL_VERSION);
+            boolean fullVersion = (premiumPurchase != null &&
+                    BuyGameActivity.verifyDeveloperPayload(premiumPurchase));
+
+            if (fullVersion) {
+                setFullVersion();
+            }
+        }
+    };
 
     private void initializeMenu() {
         mMenuItems[0] = new Bundle();
@@ -126,6 +174,11 @@ class GameControlSmartWatch2 extends ControlExtension {
     @Override
     public void onDestroy() {
         mHandler = null;
+
+        if (mHelper != null) {
+            mHelper.dispose();
+            mHelper = null;
+        }
     }
 
     @Override
@@ -230,6 +283,8 @@ class GameControlSmartWatch2 extends ControlExtension {
                     }
                 }, LOSING_TIMEOUT);
             }
+        } else if (mGame.isFreeLimitReached()) {
+            mGameState = GameState.FREE_LIMIT_REACHED;
         }
     }
 
@@ -249,6 +304,13 @@ class GameControlSmartWatch2 extends ControlExtension {
             }
             case R.id.continue_game: {
                 mGameState = mLastGameState;
+                renderGame();
+                break;
+            }
+            case R.id.buy_game_button: {
+                BuyGameActivity.show(mContext);
+
+                mGameState = GameState.PURCHASE_IN_PROGRESS;
                 renderGame();
                 break;
             }
@@ -277,6 +339,18 @@ class GameControlSmartWatch2 extends ControlExtension {
             }
             case SCORE: {
                 renderScore();
+                break;
+            }
+            case FREE_LIMIT_REACHED: {
+                showLayout(R.layout.buy_game, null);
+                break;
+            }
+            case PURCHASE_IN_PROGRESS: {
+                showLayout(R.layout.buy_on_phone, null);
+                break;
+            }
+            case PURCHASE_CANCELLED: {
+                showLayout(R.layout.purchase_cancelled, null);
                 break;
             }
         }
@@ -346,6 +420,33 @@ class GameControlSmartWatch2 extends ControlExtension {
                 saveState();
             }
 
+            renderGame();
+        }
+    }
+
+    @Override
+    public void onDoAction(int requestCode, Bundle bundle) {
+        switch (requestCode) {
+            case ACTION_PURCHASE_COMPLETE: {
+                setFullVersion();
+                break;
+            }
+            case ACTION_PURCHASE_CANCELLED: {
+                mGameState = GameState.PURCHASE_CANCELLED;
+                renderGame();
+                break;
+            }
+        }
+    }
+
+    private void setFullVersion() {
+        System.out.println("setFullVersion");
+        mGame.setFullVersion(true);
+        if (mGameState == GameState.FREE_LIMIT_REACHED ||
+                mGameState == GameState.PURCHASE_IN_PROGRESS ||
+                mGameState == GameState.PURCHASE_CANCELLED) {
+            mGameState = GameState.RUNNING;
+            updateGameState();
             renderGame();
         }
     }

@@ -12,10 +12,18 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
+import sexy.fairly.smartwatch.game2048.util.IabHelper;
+import sexy.fairly.smartwatch.game2048.util.IabResult;
+import sexy.fairly.smartwatch.game2048.util.Inventory;
+import sexy.fairly.smartwatch.game2048.util.Purchase;
+
 
 public class GamePreferenceActivity extends PreferenceActivity {
 
     private static final int DIALOG_READ_ME = 1;
+
+
+    private IabHelper mHelper;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -54,7 +62,55 @@ public class GamePreferenceActivity extends PreferenceActivity {
                         return true;
                     }
                 });
+
+        findPreference(getText(R.string.preference_key_buy_full_version))
+                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        BuyGameActivity.show(GamePreferenceActivity.this);
+                        return true;
+                    }
+                });
+
+        mHelper = new IabHelper(this, BuyGameActivity.LICENSE_PUBLIC_KEY);
+        mHelper.enableDebugLogging(BuyGameActivity.DEBUG);
+        startIabHelper();
     }
+
+    private void startIabHelper() {
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    return;
+                }
+
+                if (mHelper == null) return;
+
+                mHelper.queryInventoryAsync(mGotInventoryListener);
+            }
+        });
+    }
+
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            if (mHelper == null) return;
+
+            if (result.isFailure()) {
+                return;
+            }
+
+            Purchase premiumPurchase = inventory.getPurchase(BuyGameActivity.SKU_FULL_VERSION);
+            boolean isPremium = (premiumPurchase != null &&
+                    BuyGameActivity.verifyDeveloperPayload(premiumPurchase));
+
+            if (isPremium) {
+                Preference preference = findPreference(getText(R.string.preference_key_buy_full_version));
+                preference.setEnabled(false);
+                preference.setTitle(R.string.preference_option_bought_full_version);
+            }
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -101,4 +157,13 @@ public class GamePreferenceActivity extends PreferenceActivity {
         return builder.create();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (mHelper != null) {
+            mHelper.dispose();
+            mHelper = null;
+        }
+    }
 }
