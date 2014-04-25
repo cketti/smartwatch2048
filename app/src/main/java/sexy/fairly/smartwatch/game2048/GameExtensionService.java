@@ -13,7 +13,7 @@ public class GameExtensionService extends ExtensionService {
     public static final String ACTION_PURCHASE_COMPLETE = "purchase_complete";
     public static final String ACTION_PURCHASE_CANCELLED = "purchase_cancelled";
 
-    public static final String EXTENSION_KEY = "com.sonymobile.smartconnect.extension.samplecontrol.key";
+    public static final String EXTENSION_KEY = "sexy.fairly.smartwatch.game2048.key";
 
 
     public GameExtensionService() {
