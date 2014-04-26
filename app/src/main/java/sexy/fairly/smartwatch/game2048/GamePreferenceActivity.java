@@ -12,10 +12,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-import sexy.fairly.smartwatch.game2048.util.IabHelper;
-import sexy.fairly.smartwatch.game2048.util.IabResult;
-import sexy.fairly.smartwatch.game2048.util.Inventory;
-import sexy.fairly.smartwatch.game2048.util.Purchase;
+import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
 
 
 public class GamePreferenceActivity extends PreferenceActivity {
@@ -23,7 +20,10 @@ public class GamePreferenceActivity extends PreferenceActivity {
     private static final int DIALOG_READ_ME = 1;
 
 
-    private IabHelper mHelper;
+    private PurchaseHelper mPurchaseHelper;
+    private PurchaseHelper.PurchaseListener mPurchaseListener = new PurchaseListener();
+    private boolean mIsFullVersion = false;
+
 
     @SuppressWarnings("deprecation")
     @Override
@@ -63,54 +63,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
                     }
                 });
 
-        findPreference(getText(R.string.preference_key_buy_full_version))
-                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        BuyGameActivity.show(GamePreferenceActivity.this);
-                        return true;
-                    }
-                });
-
-        mHelper = new IabHelper(this, BuyGameActivity.LICENSE_PUBLIC_KEY);
-        mHelper.enableDebugLogging(BuyGameActivity.DEBUG);
-        startIabHelper();
-    }
-
-    private void startIabHelper() {
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    return;
+        Preference buyPreference = findPreference(getText(R.string.preference_key_buy_full_version));
+        buyPreference.setTitle(R.string.preference_option_loading_purchase_state);
+        buyPreference.setEnabled(false);
+        buyPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    BuyGameActivity.show(GamePreferenceActivity.this);
+                    return true;
                 }
-
-                if (mHelper == null) return;
-
-                mHelper.queryInventoryAsync(mGotInventoryListener);
-            }
         });
+
+        mPurchaseHelper = new PurchaseHelper(this, mPurchaseListener);
     }
-
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            if (mHelper == null) return;
-
-            if (result.isFailure()) {
-                return;
-            }
-
-            Purchase premiumPurchase = inventory.getPurchase(BuyGameActivity.SKU_FULL_VERSION);
-            boolean isPremium = (premiumPurchase != null &&
-                    BuyGameActivity.verifyDeveloperPayload(premiumPurchase));
-
-            if (isPremium) {
-                Preference preference = findPreference(getText(R.string.preference_key_buy_full_version));
-                preference.setEnabled(false);
-                preference.setTitle(R.string.preference_option_bought_full_version);
-            }
-        }
-    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -135,14 +100,12 @@ public class GamePreferenceActivity extends PreferenceActivity {
         return dialog;
     }
 
-    /**
-     * Create the Read me dialog
-     *
-     * @return the Dialog
-     */
     private Dialog createReadMeDialog() {
-        String message = getString(R.string.preference_option_read_me_txt) +
-                getString(R.string.preference_option_read_me_txt_free);
+        String message = getString(R.string.preference_option_read_me_txt);
+
+        if (!mIsFullVersion) {
+            message += getString(R.string.preference_option_read_me_txt_free);
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message)
@@ -160,10 +123,20 @@ public class GamePreferenceActivity extends PreferenceActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mPurchaseHelper.destroy();
+    }
 
-        if (mHelper != null) {
-            mHelper.dispose();
-            mHelper = null;
+    class PurchaseListener implements PurchaseHelper.PurchaseListener {
+        @Override
+        public void purchaseState(boolean fullVersion) {
+            Preference preference = findPreference(getText(R.string.preference_key_buy_full_version));
+            if (fullVersion) {
+                mIsFullVersion = true;
+                preference.setTitle(R.string.preference_option_bought_full_version);
+            } else {
+                preference.setEnabled(true);
+                preference.setTitle(R.string.preference_option_buy_full_version);
+            }
         }
     }
 }

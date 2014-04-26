@@ -12,19 +12,14 @@ import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
-import java.util.concurrent.TimeUnit;
-
 import sexy.fairly.smartwatch.game2048.storage.State;
-import sexy.fairly.smartwatch.game2048.util.IabHelper;
-import sexy.fairly.smartwatch.game2048.util.IabResult;
-import sexy.fairly.smartwatch.game2048.util.Inventory;
-import sexy.fairly.smartwatch.game2048.util.Purchase;
+import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
+
 
 class GameControlSmartWatch2 extends ControlExtension {
     public static final int ACTION_PURCHASE_COMPLETE = 1;
     public static final int ACTION_PURCHASE_CANCELLED = 2;
 
-    private static final long PURCHASE_STATE_TIMEOUT = TimeUnit.DAYS.toMillis(14);
     private static final long WINNING_TIMEOUT = 800;
     private static final long LOSING_TIMEOUT = 1500;
     private static final long NEW_TILE_TIMEOUT = 180;
@@ -54,12 +49,6 @@ class GameControlSmartWatch2 extends ControlExtension {
         IMAGES.put(8192, R.drawable.cell_8192);
     }
 
-    private static final int MENU_ITEM_0 = 0;
-    private static final int MENU_ITEM_1 = 1;
-    private GameState mLastGameState;
-    private boolean mMoveInProgress = false;
-    private IabHelper mHelper;
-
     public static enum GameState {
         LOADING,
         RUNNING,
@@ -73,11 +62,19 @@ class GameControlSmartWatch2 extends ControlExtension {
         PURCHASE_CANCELLED
     }
 
-    private Bundle[] mMenuItems = new Bundle[2];
+    private static final int MENU_ITEM_0 = 0;
+    private static final int MENU_ITEM_1 = 1;
 
+    private GameState mLastGameState;
+    private boolean mMoveInProgress = false;
+    private PurchaseHelper mPurchaseHelper;
+    private PurchaseHelper.PurchaseListener mPurchaseListener = new GamePurchaseListener();
+    private Bundle[] mMenuItems = new Bundle[2];
     private Handler mHandler;
     private Game mGame;
     private GameState mGameState;
+    private boolean mPurchaseStateLoaded = false;
+
 
     GameControlSmartWatch2(final String hostAppPackageName, final Context context,
             Handler handler) {
@@ -88,50 +85,9 @@ class GameControlSmartWatch2 extends ControlExtension {
         mHandler = handler;
 
         initializeMenu();
-        startIabHelper(context);
+
+        mPurchaseHelper = new PurchaseHelper(context, mPurchaseListener);
     }
-
-    private void startIabHelper(Context context) {
-        mHelper = new IabHelper(context, BuyGameActivity.LICENSE_PUBLIC_KEY);
-        mHelper.enableDebugLogging(BuyGameActivity.DEBUG);
-
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    return;
-                }
-
-                if (mHelper == null) return;
-
-                mHelper.queryInventoryAsync(mGotInventoryListener);
-            }
-        });
-    }
-
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener =
-            new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            if (mHelper == null) return;
-
-            if (result.isFailure()) {
-                Intent intent = new Intent(mContext, PersistenceService.class);
-                intent.setAction(PersistenceService.ACTION_READ_PURCHASE_STATE);
-                intent.putExtra(PersistenceService.EXTRA_RESULT_RECEIVER,
-                        new PurchaseStateResultReceiver(mHandler));
-                mContext.startService(intent);
-
-                return;
-            }
-
-            Purchase premiumPurchase = inventory.getPurchase(BuyGameActivity.SKU_FULL_VERSION);
-            boolean fullVersion = (premiumPurchase != null &&
-                    BuyGameActivity.verifyDeveloperPayload(premiumPurchase));
-
-            if (fullVersion) {
-                setFullVersion(true);
-            }
-        }
-    };
 
     private void initializeMenu() {
         mMenuItems[0] = new Bundle();
@@ -173,6 +129,14 @@ class GameControlSmartWatch2 extends ControlExtension {
         });
 
         mGameState = GameState.LOADING;
+        renderGame();
+
+        if (mPurchaseStateLoaded) {
+            loadGameState();
+        }
+    }
+
+    private void loadGameState() {
         Intent intent = new Intent(mContext, PersistenceService.class);
         intent.setAction(PersistenceService.ACTION_READ);
         intent.putExtra(PersistenceService.EXTRA_RESULT_RECEIVER,
@@ -184,10 +148,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     public void onDestroy() {
         mHandler = null;
 
-        if (mHelper != null) {
-            mHelper.dispose();
-            mHelper = null;
-        }
+        mPurchaseHelper.destroy();
     }
 
     @Override
@@ -433,30 +394,11 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
     }
 
-    public class PurchaseStateResultReceiver extends ResultReceiver {
-
-        public PurchaseStateResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            boolean fullVersion =
-                    resultData.getBoolean(PersistenceService.EXTRA_FULL_VERSION, false);
-            long timeStamp = resultData.getLong(PersistenceService.EXTRA_TIMESTAMP, -1);
-
-            if (fullVersion && System.currentTimeMillis() - timeStamp <= PURCHASE_STATE_TIMEOUT) {
-                setFullVersion(false);
-            }
-            renderGame();
-        }
-    }
-
     @Override
     public void onDoAction(int requestCode, Bundle bundle) {
         switch (requestCode) {
             case ACTION_PURCHASE_COMPLETE: {
-                setFullVersion(false);
+                setFullVersion();
                 break;
             }
             case ACTION_PURCHASE_CANCELLED: {
@@ -467,7 +409,7 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
     }
 
-    private void setFullVersion(boolean save) {
+    private void setFullVersion() {
         mGame.setFullVersion(true);
         if (mGameState == GameState.FREE_LIMIT_REACHED ||
                 mGameState == GameState.PURCHASE_IN_PROGRESS ||
@@ -476,12 +418,16 @@ class GameControlSmartWatch2 extends ControlExtension {
             updateGameState();
             renderGame();
         }
+    }
 
-        if (save) {
-            Intent intent = new Intent(mContext, PersistenceService.class);
-            intent.setAction(PersistenceService.ACTION_SAVE_PURCHASE_STATE);
-            intent.putExtra(PersistenceService.EXTRA_FULL_VERSION, true);
-            mContext.startService(intent);
+    class GamePurchaseListener implements PurchaseHelper.PurchaseListener {
+        @Override
+        public void purchaseState(boolean fullVersion) {
+            mPurchaseStateLoaded = true;
+            if (fullVersion) {
+                setFullVersion();
+            }
+            loadGameState();
         }
     }
 }

@@ -14,6 +14,7 @@
     <string name="preference_option_read_me">Instructions</string>
     <string name="preference_option_support">Support</string>
     <string name="preference_option_buy_full_version">Buy full version</string>
+    <string name="preference_option_loading_purchase_state">Fetching purchase state…</string>
     <string name="preference_option_bought_full_version">You bought the full version!</string>
 
     <!-- Read me text shown in dialog -->
