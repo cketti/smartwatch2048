@@ -12,6 +12,7 @@ import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
 public class BuyGameActivity extends Activity {
     private static final int RC_REQUEST = 10001;
     private static final String EXTRA_DISPLAY_SUCCESS_MESSAGE = "display_success_message";
+    private static final String EXTRA_DISPLAY_ERROR_MESSAGE = "display_error_message";
 
 
     public static void show(Context context) {
@@ -26,6 +27,7 @@ public class BuyGameActivity extends Activity {
 
     private PurchaseHelper mPurchaseHelper;
     private boolean mDisplaySuccessMessage;
+    private boolean mDisplayErrorMessage;
     private GamePurchaseListener mPurchaseListener;
     private GamePurchaseFinishedListener mPurchaseFinishedListener;
 
@@ -35,14 +37,24 @@ public class BuyGameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_game);
 
+        findViewById(R.id.buy_game_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPurchaseFlow();
+            }
+        });
+
         if (savedInstanceState != null) {
             mDisplaySuccessMessage = savedInstanceState.getBoolean(EXTRA_DISPLAY_SUCCESS_MESSAGE);
+            mDisplayErrorMessage = savedInstanceState.getBoolean(EXTRA_DISPLAY_ERROR_MESSAGE);
         } else {
             mDisplaySuccessMessage = false;
         }
 
         if (mDisplaySuccessMessage) {
             displaySuccessMessage();
+        } else if (mDisplayErrorMessage) {
+            displayErrorMessage();
         } else {
             mPurchaseListener = new GamePurchaseListener();
             mPurchaseFinishedListener = new GamePurchaseFinishedListener();
@@ -54,6 +66,7 @@ public class BuyGameActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(EXTRA_DISPLAY_SUCCESS_MESSAGE, mDisplaySuccessMessage);
+        outState.putBoolean(EXTRA_DISPLAY_ERROR_MESSAGE, mDisplayErrorMessage);
     }
 
     class GamePurchaseListener implements PurchaseHelper.PurchaseListener {
@@ -64,13 +77,17 @@ public class BuyGameActivity extends Activity {
                 finish();
             }
 
-            if (mPurchaseHelper == null) {
-                return;
-            }
-
-            mPurchaseHelper.launchPurchaseFlow(BuyGameActivity.this, RC_REQUEST,
-                    mPurchaseFinishedListener);
+            startPurchaseFlow();
         }
+    }
+
+    private void startPurchaseFlow() {
+        if (mPurchaseHelper == null) {
+            return;
+        }
+
+        mPurchaseHelper.launchPurchaseFlow(BuyGameActivity.this, RC_REQUEST,
+                mPurchaseFinishedListener);
     }
 
     @Override
@@ -103,7 +120,8 @@ public class BuyGameActivity extends Activity {
     }
 
     private void displayErrorMessage() {
-        //TODO: implement
+        mDisplayErrorMessage = true;
+        findViewById(R.id.error_container).setVisibility(View.VISIBLE);
     }
 
     @Override
