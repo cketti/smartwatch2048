@@ -39,6 +39,7 @@ public class Game {
             freeLimitCheck();
         }
         gameOverCheck();
+        gameWonCheck();
     }
 
     public boolean isGameRunning() {
@@ -181,6 +182,19 @@ public class Game {
             }
         }
         return false;
+    }
+
+    private void gameWonCheck() {
+        int gridSize = mGrid.getSize();
+        for (int y = 0; y < gridSize; y++) {
+            for (int x = 0; x < gridSize; x++) {
+                int value = mGrid.valueAt(x, y);
+                if (value >= 2048) {
+                    mGameRunning = false;
+                    mGameWon = true;
+                }
+            }
+        }
     }
 
     private void prepareTiles() {
