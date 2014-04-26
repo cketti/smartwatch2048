@@ -51,14 +51,14 @@ public class BuyGameActivity extends Activity {
             mDisplaySuccessMessage = false;
         }
 
+        mPurchaseListener = new GamePurchaseListener();
+        mPurchaseFinishedListener = new GamePurchaseFinishedListener();
+        mPurchaseHelper = new PurchaseHelper(this, mPurchaseListener);
+
         if (mDisplaySuccessMessage) {
             displaySuccessMessage();
         } else if (mDisplayErrorMessage) {
             displayErrorMessage();
-        } else {
-            mPurchaseListener = new GamePurchaseListener();
-            mPurchaseFinishedListener = new GamePurchaseFinishedListener();
-            mPurchaseHelper = new PurchaseHelper(this, mPurchaseListener);
         }
     }
 
@@ -82,17 +82,13 @@ public class BuyGameActivity extends Activity {
     }
 
     private void startPurchaseFlow() {
-        if (mPurchaseHelper == null) {
-            return;
-        }
-
         mPurchaseHelper.launchPurchaseFlow(BuyGameActivity.this, RC_REQUEST,
                 mPurchaseFinishedListener);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mPurchaseHelper.handleActivityResult(requestCode, resultCode, data)) {
+        if (!mPurchaseHelper.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
