@@ -12,6 +12,8 @@ import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
 
+import java.util.concurrent.TimeUnit;
+
 import sexy.fairly.smartwatch.game2048.storage.State;
 import sexy.fairly.smartwatch.game2048.util.IabHelper;
 import sexy.fairly.smartwatch.game2048.util.IabResult;
@@ -22,6 +24,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     public static final int ACTION_PURCHASE_COMPLETE = 1;
     public static final int ACTION_PURCHASE_CANCELLED = 2;
 
+    private static final long PURCHASE_STATE_TIMEOUT = TimeUnit.DAYS.toMillis(14);
     private static final long WINNING_TIMEOUT = 800;
     private static final long LOSING_TIMEOUT = 1500;
     private static final long NEW_TILE_TIMEOUT = 180;
@@ -111,6 +114,12 @@ class GameControlSmartWatch2 extends ControlExtension {
             if (mHelper == null) return;
 
             if (result.isFailure()) {
+                Intent intent = new Intent(mContext, PersistenceService.class);
+                intent.setAction(PersistenceService.ACTION_READ_PURCHASE_STATE);
+                intent.putExtra(PersistenceService.EXTRA_RESULT_RECEIVER,
+                        new PurchaseStateResultReceiver(mHandler));
+                mContext.startService(intent);
+
                 return;
             }
 
@@ -119,7 +128,7 @@ class GameControlSmartWatch2 extends ControlExtension {
                     BuyGameActivity.verifyDeveloperPayload(premiumPurchase));
 
             if (fullVersion) {
-                setFullVersion();
+                setFullVersion(true);
             }
         }
     };
@@ -424,11 +433,30 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
     }
 
+    public class PurchaseStateResultReceiver extends ResultReceiver {
+
+        public PurchaseStateResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            boolean fullVersion =
+                    resultData.getBoolean(PersistenceService.EXTRA_FULL_VERSION, false);
+            long timeStamp = resultData.getLong(PersistenceService.EXTRA_TIMESTAMP, -1);
+
+            if (fullVersion && System.currentTimeMillis() - timeStamp <= PURCHASE_STATE_TIMEOUT) {
+                setFullVersion(false);
+            }
+            renderGame();
+        }
+    }
+
     @Override
     public void onDoAction(int requestCode, Bundle bundle) {
         switch (requestCode) {
             case ACTION_PURCHASE_COMPLETE: {
-                setFullVersion();
+                setFullVersion(false);
                 break;
             }
             case ACTION_PURCHASE_CANCELLED: {
@@ -439,8 +467,7 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
     }
 
-    private void setFullVersion() {
-        System.out.println("setFullVersion");
+    private void setFullVersion(boolean save) {
         mGame.setFullVersion(true);
         if (mGameState == GameState.FREE_LIMIT_REACHED ||
                 mGameState == GameState.PURCHASE_IN_PROGRESS ||
@@ -448,6 +475,13 @@ class GameControlSmartWatch2 extends ControlExtension {
             mGameState = GameState.RUNNING;
             updateGameState();
             renderGame();
+        }
+
+        if (save) {
+            Intent intent = new Intent(mContext, PersistenceService.class);
+            intent.setAction(PersistenceService.ACTION_SAVE_PURCHASE_STATE);
+            intent.putExtra(PersistenceService.EXTRA_FULL_VERSION, true);
+            mContext.startService(intent);
         }
     }
 }
