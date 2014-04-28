@@ -2,15 +2,18 @@ package sexy.fairly.smartwatch.game2048;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.preference.PreferenceManager;
 import android.util.SparseIntArray;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlObjectClickEvent;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 
 import sexy.fairly.smartwatch.game2048.storage.State;
 import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
@@ -19,10 +22,13 @@ import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
 class GameControlSmartWatch2 extends ControlExtension {
     public static final int ACTION_PURCHASE_COMPLETE = 1;
     public static final int ACTION_PURCHASE_CANCELLED = 2;
+    public static final int ACTION_SETTINGS_CHANGED = 3;
 
     private static final long WINNING_TIMEOUT = 800;
     private static final long LOSING_TIMEOUT = 1500;
     private static final long NEW_TILE_TIMEOUT = 180;
+    private static final int FIELD_WIDTH = 55;
+    private static final int FIELD_HEIGHT = 44;
 
     private static final int[][] FIELD_IDS = new int[][] {
         new int[] { R.id.field1_1, R.id.field1_2, R.id.field1_3, R.id.field1_4 },
@@ -65,6 +71,8 @@ class GameControlSmartWatch2 extends ControlExtension {
     private static final int MENU_ITEM_0 = 0;
     private static final int MENU_ITEM_1 = 1;
 
+    private int mScreenWidth;
+    private int mScreenHeight;
     private GameState mLastGameState;
     private boolean mMoveInProgress = false;
     private PurchaseHelper mPurchaseHelper;
@@ -74,6 +82,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private Game mGame;
     private GameState mGameState;
     private boolean mPurchaseStateLoaded = false;
+    private MoveMode mMoveMode;
 
 
     GameControlSmartWatch2(final String hostAppPackageName, final Context context,
@@ -111,6 +120,11 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onStart() {
+        readMoveMode();
+
+        mScreenWidth = getSupportedControlWidth(mContext);
+        mScreenHeight = getSupportedControlHeight(mContext);
+
         mGame = new Game(new Game.InsertCellCallback() {
             @Override
             public void insertCell() {
@@ -180,6 +194,10 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onSwipe(int direction) {
+        if (mMoveMode != MoveMode.SWIPE && mMoveMode != MoveMode.CLICK_OR_SWIPE) {
+            return;
+        }
+
         if (mGameState != GameState.RUNNING || mMoveInProgress) {
             return;
         }
@@ -208,6 +226,35 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
 
         performMove(gameDirection);
+    }
+
+    @Override
+    public void onTouch(ControlTouchEvent event) {
+        if (mMoveMode != MoveMode.CLICK && mMoveMode != MoveMode.CLICK_OR_SWIPE) {
+            return;
+        }
+
+        if (mGameState != GameState.RUNNING || mMoveInProgress ||
+                event.getAction() != Control.Intents.TOUCH_ACTION_RELEASE) {
+            return;
+        }
+
+        int x = event.getX();
+        int y = event.getY();
+
+        if (y < FIELD_HEIGHT &&
+                x > FIELD_WIDTH && x < mScreenWidth - FIELD_WIDTH) {
+            performMove(Game.Direction.UP);
+        } else if (y > mScreenHeight - FIELD_HEIGHT &&
+                x > FIELD_WIDTH && x < mScreenWidth - FIELD_WIDTH) {
+            performMove(Game.Direction.DOWN);
+        } else if (x < FIELD_WIDTH &&
+                y > FIELD_HEIGHT && y < mScreenHeight - FIELD_HEIGHT) {
+            performMove(Game.Direction.LEFT);
+        } else if (x > mScreenWidth - FIELD_WIDTH &&
+                y > FIELD_HEIGHT && y < mScreenHeight - FIELD_HEIGHT) {
+            performMove(Game.Direction.RIGHT);
+        }
     }
 
     private void performMove(Game.Direction direction) {
@@ -406,6 +453,10 @@ class GameControlSmartWatch2 extends ControlExtension {
                 renderGame();
                 break;
             }
+            case ACTION_SETTINGS_CHANGED: {
+                readMoveMode();
+                break;
+            }
         }
     }
 
@@ -417,6 +468,18 @@ class GameControlSmartWatch2 extends ControlExtension {
             mGameState = GameState.RUNNING;
             updateGameState();
             renderGame();
+        }
+    }
+
+    private void readMoveMode() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String moveMode = prefs.getString(mContext.getString(R.string.preference_key_move_mode),
+                MoveMode.CLICK.name());
+
+        try {
+            mMoveMode = MoveMode.valueOf(moveMode);
+        } catch (IllegalArgumentException e) {
+            mMoveMode = MoveMode.CLICK;
         }
     }
 

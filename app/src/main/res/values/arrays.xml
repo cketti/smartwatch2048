@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="move_mode_labels">
+        <item>@string/move_number_tiles_click</item>
+        <item>@string/move_number_tiles_swipe</item>
+        <item>@string/move_number_tiles_click_or_swipe</item>
+    </string-array>
+
+    <string-array name="move_mode_values">
+        <item>@string/move_mode_click</item>
+        <item>@string/move_mode_swipe</item>
+        <item>@string/move_mode_click_or_swipe</item>
+    </string-array>
+</resources>

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Here we put strings that do not have to be translated. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="preference_key_move_mode">preference_key_move_mode</string>
     <string name="preference_key_read_me">preference_key_read_me</string>
     <string name="preference_key_support">preference_key_support</string>
     <string name="preference_key_buy_full_version">preference_key_buy_full_version</string>
 
     <string name="support_email">maxint.apps@gmail.com</string>
     <string name="support_subject">2048 for SmartWatch 2</string>
+
+    <string name="move_mode_click">CLICK</string>
+    <string name="move_mode_swipe">SWIPE</string>
+    <string name="move_mode_click_or_swipe">CLICK_OR_SWIPE</string>
 </resources>
