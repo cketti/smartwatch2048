@@ -41,7 +41,7 @@ public class GameExtensionService extends ExtensionService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String action = intent.getAction();
+        String action = (intent != null) ? intent.getAction() : null;
         if (ACTION_PURCHASE_COMPLETE.equals(action)) {
             doActionOnAllControls(GameControlSmartWatch2.ACTION_PURCHASE_COMPLETE, null);
         } else if (ACTION_PURCHASE_CANCELLED.equals(action)) {
