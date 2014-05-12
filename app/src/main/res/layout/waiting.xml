@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/smart_watch_2_control_width"
     android:layout_height="@dimen/smart_watch_2_control_height"
-    android:background="@android:color/white"
+    android:background="@color/game_field_background"
     tools:ignore="ContentDescription,PxUsage" >
 
     <TextView
         android:id="@+id/message"
         android:text="@string/loading_state"
         android:textSize="36px"
-        android:textColor="@android:color/black"
+        android:textColor="@color/game_field_text"
         android:layout_width="match_parent"
         android:layout_height="176px"
         android:gravity="center"

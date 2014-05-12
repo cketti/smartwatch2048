@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <color name="game_field_border">#bbada0</color>
+   <color name="game_field_background">#ccc0b3</color>
+   <color name="game_field_text">@android:color/black</color>
+</resources>

@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="@dimen/smart_watch_2_control_width"
                 android:layout_height="@dimen/smart_watch_2_control_height"
-                android:background="#bbada0"
+                android:background="@color/game_field_border"
                 tools:ignore="ContentDescription,PxUsage">
 
     <ImageView
