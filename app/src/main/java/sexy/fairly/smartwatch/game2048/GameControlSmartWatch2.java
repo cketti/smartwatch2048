@@ -287,6 +287,7 @@ class GameControlSmartWatch2 extends ControlExtension {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        mLastGameState = GameState.RUNNING;
                         mGameState = GameState.WON;
                         renderGame();
                     }
@@ -322,6 +323,9 @@ class GameControlSmartWatch2 extends ControlExtension {
             }
             case R.id.continue_game: {
                 mGameState = mLastGameState;
+                if (mGameState == GameState.RUNNING) {
+                    mGame.continueGame();
+                }
                 renderGame();
                 break;
             }

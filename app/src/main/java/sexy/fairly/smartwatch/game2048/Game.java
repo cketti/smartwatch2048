@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Game {
     public static final int FREE_LIMIT = 1024;
+    public static final int MAX_TILE = 8192;
 
     private final InsertCellCallback mCallback;
     private Grid mGrid;
@@ -15,6 +16,7 @@ public class Game {
     private int mBestScore;
     private boolean mGameRunning;
     private boolean mGameWon;
+    private boolean mGameAlreadyWon;
     private boolean mFullVersion = false;
     private boolean mFreeLimitReached;
 
@@ -31,6 +33,7 @@ public class Game {
         addRandomTile();
         mGameWon = false;
         mGameRunning = true;
+        mGameAlreadyWon = false;
     }
 
     public void setGrid(int[][] cells) {
@@ -83,7 +86,7 @@ public class Game {
 
                     Tile next = mGrid.valueAt(position.second);
 
-                    if (next != null && next.value == tile.value && next.mergedFrom == null) {
+                    if (next != null && next.value < MAX_TILE && next.value == tile.value && next.mergedFrom == null) {
                         Cell posNext = position.second;
                         Tile merged = new Tile(posNext.x, posNext.y, tile.value * 2);
                         merged.mergedFrom = new Pair<Tile, Tile>(tile, next);
@@ -101,9 +104,10 @@ public class Game {
 
                         }
 
-                        if (merged.value == 2048) {
+                        if (!mGameAlreadyWon && merged.value == 2048) {
                             mGameRunning = false;
                             mGameWon = true;
+                            mGameAlreadyWon = true;
                         }
 
                     } else {
@@ -190,8 +194,7 @@ public class Game {
             for (int x = 0; x < gridSize; x++) {
                 int value = mGrid.valueAt(x, y);
                 if (value >= 2048) {
-                    mGameRunning = false;
-                    mGameWon = true;
+                    mGameAlreadyWon = true;
                 }
             }
         }
@@ -261,6 +264,11 @@ public class Game {
         if (mScore > mBestScore) {
             mBestScore = mScore;
         }
+    }
+
+    public void continueGame() {
+        mGameRunning = true;
+        mGameWon = false;
     }
 
     public static enum Direction {

@@ -18,9 +18,9 @@
         />
 
     <TextView
-        android:id="@+id/new_game"
+        android:id="@+id/continue_game"
         android:clickable="true"
-        android:text="@string/button_label_new_game"
+        android:text="@string/button_label_continue"
         android:textSize="@dimen/smart_watch_2_text_size_large"
         android:gravity="center"
         android:background="#008800"
