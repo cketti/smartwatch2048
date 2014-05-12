@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Game {
-    public static final int FREE_LIMIT = 512;
+    public static final int FREE_LIMIT = 1024;
 
     private final InsertCellCallback mCallback;
     private Grid mGrid;

@@ -29,7 +29,7 @@
     <string name="preference_option_read_me_txt_swipe">Swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
     <string name="preference_option_read_me_txt_click">Click near the edges of the screen to move the number tiles. Join matching numbers to reach the 2048 tile.</string>
     <string name="preference_option_read_me_txt_click_or_swipe">Click near the edges of the screen or swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
-    <string name="preference_option_read_me_txt_free">\n\nYou can test this game by playing until you have managed to create a 512 tile. To continue you have to buy the game.</string>
+    <string name="preference_option_read_me_txt_free">\n\nYou can test this game by playing until you have managed to create a 1024 tile. To continue you have to buy the game.</string>
 
     <string name="loading_state">Loading…</string>
     <string name="button_label_continue">Continue</string>
@@ -41,7 +41,7 @@
     <string name="best_score_format">Best: %d</string>
     <string name="menu_new_game">New game</string>
     <string name="menu_show_score">Show score</string>
-    <string name="nicely_done_message">A 512 tile. Nicely done!</string>
+    <string name="nicely_done_message">A 1024 tile. Nicely done!</string>
     <string name="end_of_trial_message">Unfortunately, this marks the end of the free trial. To continue to 2048 please buy the game.</string>
     <string name="get_full_version">Get full version</string>
     <string name="continue_purchase_process_on_phone">Please continue the purchase process on your Android device.\nNote that you can also start a new game if you don\'t want to buy the app just yet.</string>
