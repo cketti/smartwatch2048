@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="sexy.fairly.smartwatch.game2048"
-      android:versionName="1.0.6" android:versionCode="10006">
+      android:versionName="1.0.7" android:versionCode="10007">
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="16"/>
 
     <uses-permission android:name="com.android.vending.BILLING" />
