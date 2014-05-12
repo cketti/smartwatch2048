@@ -29,6 +29,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private static final long NEW_TILE_TIMEOUT = 180;
     private static final int FIELD_WIDTH = 55;
     private static final int FIELD_HEIGHT = 44;
+    private static final int CLICK_AREA_HEIGHT = 2 * FIELD_HEIGHT;
 
     private static final int[][] FIELD_IDS = new int[][] {
         new int[] { R.id.field1_1, R.id.field1_2, R.id.field1_3, R.id.field1_4 },
@@ -242,10 +243,10 @@ class GameControlSmartWatch2 extends ControlExtension {
         int x = event.getX();
         int y = event.getY();
 
-        if (y < FIELD_HEIGHT &&
+        if (y < CLICK_AREA_HEIGHT &&
                 x > FIELD_WIDTH && x < mScreenWidth - FIELD_WIDTH) {
             performMove(Game.Direction.UP);
-        } else if (y > mScreenHeight - FIELD_HEIGHT &&
+        } else if (y > mScreenHeight - CLICK_AREA_HEIGHT &&
                 x > FIELD_WIDTH && x < mScreenWidth - FIELD_WIDTH) {
             performMove(Game.Direction.DOWN);
         } else if (x < FIELD_WIDTH &&
