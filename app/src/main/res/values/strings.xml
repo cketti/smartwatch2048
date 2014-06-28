@@ -15,21 +15,26 @@
     <string name="preference_option_move_number_tiles">Move number tiles</string>
 
     <string name="preference_category_miscellaneous">Miscellaneous</string>
-    <string name="preference_option_read_me">Instructions</string>
+    <string name="preference_option_instructions">Instructions</string>
+    <string name="preference_summary_instructions">How to play the game</string>
+    <string name="preference_option_premium_version">Premium version</string>
+    <string name="preference_summary_buy_full_version">Buy full version</string>
+    <string name="preference_summary_loading_purchase_state">Fetching purchase state…</string>
+    <string name="preference_summary_bought_full_version">You bought the full version!</string>
+    <string name="preference_category_about">About</string>
+    <string name="preference_option_version">Version</string>
     <string name="preference_option_support">Support</string>
-    <string name="preference_option_buy_full_version">Buy full version</string>
-    <string name="preference_option_loading_purchase_state">Fetching purchase state…</string>
-    <string name="preference_option_bought_full_version">You bought the full version!</string>
+    <string name="preference_option_google_plus">Google+</string>
+    <string name="preference_summary_google_plus">Follow MAXINT Apps on Google+</string>
 
     <string name="move_number_tiles_click">Click near edges of screen</string>
     <string name="move_number_tiles_swipe">Swipe in direction</string>
     <string name="move_number_tiles_click_or_swipe">Click or swipe</string>
 
-    <!-- Read me text shown in dialog -->
-    <string name="preference_option_read_me_txt_swipe">Swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
-    <string name="preference_option_read_me_txt_click">Click near the edges of the screen to move the number tiles. Join matching numbers to reach the 2048 tile.</string>
-    <string name="preference_option_read_me_txt_click_or_swipe">Click near the edges of the screen or swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
-    <string name="preference_option_read_me_txt_free">\n\nYou can test this game by playing until you have managed to create a 512 tile. To continue you have to buy the game.</string>
+    <string name="preference_option_instructions_txt_swipe">Swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
+    <string name="preference_option_instructions_txt_click">Click near the edges of the screen to move the number tiles. Join matching numbers to reach the 2048 tile.</string>
+    <string name="preference_option_instructions_txt_click_or_swipe">Click near the edges of the screen or swipe up, down, left, and right to move the number tiles on the screen. Join matching numbers to reach the 2048 tile.\n\nUnfortunately, the swipe detection of the watch is pretty bad. We found it works best if you swipe in the middle of the screen.</string>
+    <string name="preference_option_instructions_txt_free">\n\nYou can test this game by playing until you have managed to create a 512 tile. To continue you have to buy the game.</string>
 
     <string name="loading_state">Loading…</string>
     <string name="button_label_continue">Continue</string>

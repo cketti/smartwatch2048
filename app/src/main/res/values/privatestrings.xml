@@ -4,14 +4,18 @@
     <string name="preference_key_settings">preference_key_settings</string>
     <string name="preference_key_move_mode">preference_key_move_mode</string>
     <string name="preference_key_miscellaneous">preference_key_misc</string>
-    <string name="preference_key_read_me">preference_key_read_me</string>
+    <string name="preference_key_instructions">preference_key_read_me</string>
     <string name="preference_key_support">preference_key_support</string>
-    <string name="preference_key_buy_full_version">preference_key_buy_full_version</string>
+    <string name="preference_key_premium_version">preference_key_buy_full_version</string>
+    <string name="preference_key_about">preference_key_about</string>
 
     <string name="support_email">maxint.apps@gmail.com</string>
     <string name="support_subject">2048 for SmartWatch 2</string>
+    <string name="google_plus_url">https://plus.google.com/113059507105763865629/</string>
 
     <string name="move_mode_click">CLICK</string>
     <string name="move_mode_swipe">SWIPE</string>
     <string name="move_mode_click_or_swipe">CLICK_OR_SWIPE</string>
+    <string name="preference_key_version">preference_key_version</string>
+    <string name="preference_key_google_plus">preference_key_google_plus</string>
 </resources>

@@ -5,18 +5,25 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
 
 
+@SuppressWarnings("deprecation")
 public class GamePreferenceActivity extends PreferenceActivity {
 
-    private static final int DIALOG_READ_ME = 1;
+    private static final int DIALOG_INSTRUCTIONS = 1;
 
 
     private PurchaseHelper mPurchaseHelper;
@@ -25,7 +32,6 @@ public class GamePreferenceActivity extends PreferenceActivity {
     private ListPreference mMoveMode;
 
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
         PreferenceManager.setDefaultValues(this, R.xml.preference, true);
         addPreferencesFromResource(R.xml.preference);
 
+        setupMoveModePreference();
+
+        setupInstructionsPreference();
+        setupPremiumVersionPreference();
+
+        setupVersionPreference();
+        setupSupportPreference();
+        setupGooglePlusPreference();
+
+        mPurchaseHelper = new PurchaseHelper(this, mPurchaseListener);
+    }
+
+    private void setupMoveModePreference() {
         mMoveMode = (ListPreference) findPreference(getString(R.string.preference_key_move_mode));
         setMoveMoveSummary(mMoveMode.getValue());
         mMoveMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -49,36 +68,23 @@ public class GamePreferenceActivity extends PreferenceActivity {
                 return true;
             }
         });
+    }
 
-        findPreference(getText(R.string.preference_key_read_me))
+    private void setupInstructionsPreference() {
+        findPreference(getText(R.string.preference_key_instructions))
                 .setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        showDialog(DIALOG_READ_ME);
+                        showDialog(DIALOG_INSTRUCTIONS);
                         return true;
                     }
                 });
+    }
 
-        findPreference(getText(R.string.preference_key_support))
-                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_SENDTO);
-                            intent.setData(Uri.parse("mailto:" + getString(R.string.support_email) +
-                                "?subject=" + getString(R.string.support_subject)));
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            // Ignore
-                        }
-                        return true;
-                    }
-                });
-
-        Preference buyPreference = findPreference(getText(R.string.preference_key_buy_full_version));
-        buyPreference.setTitle(R.string.preference_option_loading_purchase_state);
+    private void setupPremiumVersionPreference() {
+        Preference buyPreference = findPreference(getText(R.string.preference_key_premium_version));
+        buyPreference.setSummary(R.string.preference_summary_loading_purchase_state);
         buyPreference.setEnabled(false);
         buyPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
@@ -87,8 +93,54 @@ public class GamePreferenceActivity extends PreferenceActivity {
                     return true;
                 }
         });
+    }
 
-        mPurchaseHelper = new PurchaseHelper(this, mPurchaseListener);
+    private void setupVersionPreference() {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String versionName = packageInfo.versionName;
+            findPreference(getText(R.string.preference_key_version)).setSummary(versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            // Ignore
+        }
+    }
+
+    private void setupSupportPreference() {
+        findPreference(getText(R.string.preference_key_support))
+                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_SENDTO);
+                            intent.setData(Uri.parse("mailto:" + getString(R.string.support_email) +
+                                    "?subject=" + getString(R.string.support_subject)));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            // Ignore
+                        }
+                        return true;
+                    }
+                });
+    }
+
+    private void setupGooglePlusPreference() {
+        findPreference(getText(R.string.preference_key_google_plus))
+                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(getString(R.string.google_plus_url)));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            // Ignore
+                        }
+                        return true;
+                    }
+                });
     }
 
     @Override
@@ -106,7 +158,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
         Dialog dialog = null;
 
         switch (id) {
-            case DIALOG_READ_ME:
+            case DIALOG_INSTRUCTIONS:
                 dialog = createReadMeDialog();
                 break;
         }
@@ -117,7 +169,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
-            case DIALOG_READ_ME: {
+            case DIALOG_INSTRUCTIONS: {
                 ((AlertDialog) dialog).setMessage(getReadMeMessage());
                 break;
             }
@@ -136,21 +188,21 @@ public class GamePreferenceActivity extends PreferenceActivity {
         switch (moveMode) {
             default:
             case CLICK: {
-                message = getString(R.string.preference_option_read_me_txt_click);
+                message = getString(R.string.preference_option_instructions_txt_click);
                 break;
             }
             case SWIPE: {
-                message = getString(R.string.preference_option_read_me_txt_swipe);
+                message = getString(R.string.preference_option_instructions_txt_swipe);
                 break;
             }
             case CLICK_OR_SWIPE: {
-                message = getString(R.string.preference_option_read_me_txt_click_or_swipe);
+                message = getString(R.string.preference_option_instructions_txt_click_or_swipe);
                 break;
             }
         }
 
         if (!mIsFullVersion) {
-            message += getString(R.string.preference_option_read_me_txt_free);
+            message += getString(R.string.preference_option_instructions_txt_free);
         }
 
         return message;
@@ -159,7 +211,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
     private Dialog createReadMeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("")
-                .setTitle(R.string.preference_option_read_me)
+                .setTitle(R.string.preference_option_instructions)
                 .setPositiveButton(android.R.string.ok, new OnClickListener() {
 
                     @Override
@@ -187,7 +239,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
 
     private void removeBuyPreference() {
         Preference buyPreference = findPreference(
-                getString(R.string.preference_key_buy_full_version));
+                getString(R.string.preference_key_premium_version));
         PreferenceCategory miscCategory = (PreferenceCategory) findPreference(
                 getString(R.string.preference_key_miscellaneous));
         miscCategory.removePreference(buyPreference);
@@ -197,13 +249,13 @@ public class GamePreferenceActivity extends PreferenceActivity {
         @Override
         public void purchaseState(boolean fullVersion) {
             Preference preference = findPreference(
-                    getText(R.string.preference_key_buy_full_version));
+                    getText(R.string.preference_key_premium_version));
             if (fullVersion) {
                 mIsFullVersion = true;
-                preference.setTitle(R.string.preference_option_bought_full_version);
+                preference.setSummary(R.string.preference_summary_bought_full_version);
             } else {
                 preference.setEnabled(true);
-                preference.setTitle(R.string.preference_option_buy_full_version);
+                preference.setSummary(R.string.preference_summary_buy_full_version);
             }
         }
 
