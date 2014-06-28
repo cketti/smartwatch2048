@@ -77,12 +77,10 @@ class GameControlSmartWatch2 extends ControlExtension {
     private GameState mLastGameState;
     private boolean mMoveInProgress = false;
     private PurchaseHelper mPurchaseHelper;
-    private PurchaseHelper.PurchaseListener mPurchaseListener = new GamePurchaseListener();
     private Bundle[] mMenuItems = new Bundle[2];
     private Handler mHandler;
     private Game mGame;
     private GameState mGameState;
-    private boolean mPurchaseStateLoaded = false;
     private MoveMode mMoveMode;
 
 
@@ -96,7 +94,8 @@ class GameControlSmartWatch2 extends ControlExtension {
 
         initializeMenu();
 
-        mPurchaseHelper = new PurchaseHelper(context, mPurchaseListener);
+        final PurchaseHelper.PurchaseListener purchaseListener = new GamePurchaseListener();
+        mPurchaseHelper = new PurchaseHelper(context, purchaseListener);
     }
 
     private void initializeMenu() {
@@ -146,9 +145,7 @@ class GameControlSmartWatch2 extends ControlExtension {
         mGameState = GameState.LOADING;
         renderGame();
 
-        if (mPurchaseStateLoaded) {
-            loadGameState();
-        }
+        loadGameState();
     }
 
     private void loadGameState() {
@@ -476,6 +473,15 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
     }
 
+    private void setTrialVersion() {
+        mGame.setFullVersion(false);
+        if (mGame.isFreeLimitReached() && mGameState == GameState.RUNNING) {
+            mGameState = GameState.FREE_LIMIT_REACHED;
+            updateGameState();
+            renderGame();
+        }
+    }
+
     private void readMoveMode() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String moveMode = prefs.getString(mContext.getString(R.string.preference_key_move_mode),
@@ -491,11 +497,11 @@ class GameControlSmartWatch2 extends ControlExtension {
     class GamePurchaseListener implements PurchaseHelper.PurchaseListener {
         @Override
         public void purchaseState(boolean fullVersion) {
-            mPurchaseStateLoaded = true;
             if (fullVersion) {
                 setFullVersion();
+            } else {
+                setTrialVersion();
             }
-            loadGameState();
         }
     }
 }

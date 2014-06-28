@@ -17,7 +17,7 @@ public class Game {
     private boolean mGameRunning;
     private boolean mGameWon;
     private boolean mGameAlreadyWon;
-    private boolean mFullVersion = false;
+    private boolean mFullVersion = true;
     private boolean mFreeLimitReached;
 
     public Game(InsertCellCallback callback) {
@@ -38,9 +38,7 @@ public class Game {
 
     public void setGrid(int[][] cells) {
         mGrid = new Grid(cells);
-        if (!mFullVersion) {
-            freeLimitCheck();
-        }
+        freeLimitCheck();
         gameOverCheck();
         gameWonCheck();
     }
@@ -99,7 +97,7 @@ public class Game {
 
                         setScore(mScore + merged.value);
 
-                        if (!mFullVersion && !mFreeLimitReached && merged.value == FREE_LIMIT) {
+                        if (!mFreeLimitReached && merged.value == FREE_LIMIT) {
                             mFreeLimitReached = true;
 
                         }
