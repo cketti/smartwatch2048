@@ -2,7 +2,9 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/preference_category_game_settings">
+    <PreferenceCategory
+        android:key="@string/preference_key_settings"
+        android:title="@string/preference_category_game_settings">
 
         <ListPreference
             android:key="@string/preference_key_move_mode"
@@ -13,7 +15,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/preference_category_miscellaneous">
+    <PreferenceCategory
+        android:key="@string/preference_key_miscellaneous"
+        android:title="@string/preference_category_miscellaneous">
 
         <!-- Read me -->
         <Preference

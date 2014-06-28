@@ -7,11 +7,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
+import android.preference.*;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
@@ -188,10 +185,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
         }
     }
 
+    private void removeBuyPreference() {
+        Preference buyPreference = findPreference(
+                getString(R.string.preference_key_buy_full_version));
+        PreferenceCategory miscCategory = (PreferenceCategory) findPreference(
+                getString(R.string.preference_key_miscellaneous));
+        miscCategory.removePreference(buyPreference);
+    }
+
     class PurchaseListener implements PurchaseHelper.PurchaseListener {
         @Override
         public void purchaseState(boolean fullVersion) {
-            Preference preference = findPreference(getText(R.string.preference_key_buy_full_version));
+            Preference preference = findPreference(
+                    getText(R.string.preference_key_buy_full_version));
             if (fullVersion) {
                 mIsFullVersion = true;
                 preference.setTitle(R.string.preference_option_bought_full_version);
@@ -199,6 +205,11 @@ public class GamePreferenceActivity extends PreferenceActivity {
                 preference.setEnabled(true);
                 preference.setTitle(R.string.preference_option_buy_full_version);
             }
+        }
+
+        @Override
+        public void billingNotAvailable() {
+            removeBuyPreference();
         }
     }
 }

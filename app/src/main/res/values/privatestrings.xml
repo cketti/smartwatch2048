@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Here we put strings that do not have to be translated. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="preference_key_settings">preference_key_settings</string>
     <string name="preference_key_move_mode">preference_key_move_mode</string>
+    <string name="preference_key_miscellaneous">preference_key_misc</string>
     <string name="preference_key_read_me">preference_key_read_me</string>
     <string name="preference_key_support">preference_key_support</string>
     <string name="preference_key_buy_full_version">preference_key_buy_full_version</string>

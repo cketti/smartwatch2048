@@ -79,6 +79,11 @@ public class BuyGameActivity extends Activity {
 
             startPurchaseFlow();
         }
+
+        @Override
+        public void billingNotAvailable() {
+            finish();
+        }
     }
 
     private void startPurchaseFlow() {

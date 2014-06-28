@@ -503,5 +503,10 @@ class GameControlSmartWatch2 extends ControlExtension {
                 setTrialVersion();
             }
         }
+
+        @Override
+        public void billingNotAvailable() {
+            setFullVersion();
+        }
     }
 }

@@ -1,13 +1,13 @@
 package sexy.fairly.smartwatch.game2048.util;
 
+import java.util.concurrent.TimeUnit;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-
-import java.util.concurrent.TimeUnit;
 
 import sexy.fairly.smartwatch.game2048.PersistenceService;
 
@@ -33,7 +33,7 @@ public class PurchaseHelper {
             new InventoryListener();
 
 
-    public PurchaseHelper(Context context, PurchaseListener listener) {
+    public PurchaseHelper(Context context, final PurchaseListener listener) {
         mContext = context;
         mHandler = new Handler();
         mPurchaseListener = listener;
@@ -42,6 +42,11 @@ public class PurchaseHelper {
 
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
+                if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE) {
+                    listener.billingNotAvailable();
+                    return;
+                }
+
                 if (!result.isSuccess() || mHelper == null) {
                     loadCachedPurchaseState();
                     return;
@@ -156,6 +161,7 @@ public class PurchaseHelper {
 
     public static interface PurchaseListener {
         void purchaseState(boolean fullVersion);
+        void billingNotAvailable();
     }
 
     public static interface PurchaseFinishedListener {
