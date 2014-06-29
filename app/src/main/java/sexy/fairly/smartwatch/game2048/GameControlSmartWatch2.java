@@ -82,6 +82,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private Game mGame;
     private GameState mGameState;
     private MoveMode mMoveMode;
+    private boolean mVibrate;
 
 
     GameControlSmartWatch2(final String hostAppPackageName, final Context context,
@@ -120,7 +121,7 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     @Override
     public void onStart() {
-        readMoveMode();
+        readSettings();
 
         mScreenWidth = getSupportedControlWidth(mContext);
         mScreenHeight = getSupportedControlHeight(mContext);
@@ -257,11 +258,18 @@ class GameControlSmartWatch2 extends ControlExtension {
 
     private void performMove(Game.Direction direction) {
         mMoveInProgress = true;
+        vibrateOnMove();
         if (!mGame.move(direction)) {
             mMoveInProgress = false;
         }
         updateGameState();
         renderGame();
+    }
+
+    private void vibrateOnMove() {
+        if (mVibrate) {
+            startVibrator(30, 0, 1);
+        }
     }
 
     private void saveState() {
@@ -456,7 +464,7 @@ class GameControlSmartWatch2 extends ControlExtension {
                 break;
             }
             case ACTION_SETTINGS_CHANGED: {
-                readMoveMode();
+                readSettings();
                 break;
             }
         }
@@ -482,9 +490,14 @@ class GameControlSmartWatch2 extends ControlExtension {
         }
     }
 
-    private void readMoveMode() {
+    private void readSettings() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String moveMode = prefs.getString(mContext.getString(R.string.preference_key_move_mode),
+        readMoveModeSetting(prefs);
+        readVibrateSetting(prefs);
+    }
+
+    private void readMoveModeSetting(SharedPreferences preferences) {
+        String moveMode = preferences.getString(mContext.getString(R.string.preference_key_move_mode),
                 MoveMode.CLICK.name());
 
         try {
@@ -492,6 +505,10 @@ class GameControlSmartWatch2 extends ControlExtension {
         } catch (IllegalArgumentException e) {
             mMoveMode = MoveMode.CLICK;
         }
+    }
+
+    private void readVibrateSetting(SharedPreferences preferences) {
+        mVibrate = preferences.getBoolean(mContext.getString(R.string.preference_key_vibrate), false);
     }
 
     class GamePurchaseListener implements PurchaseHelper.PurchaseListener {

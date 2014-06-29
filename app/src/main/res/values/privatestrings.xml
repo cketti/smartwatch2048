@@ -3,6 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="preference_key_settings">preference_key_settings</string>
     <string name="preference_key_move_mode">preference_key_move_mode</string>
+    <string name="preference_key_vibrate">preference_key_vibrate</string>
     <string name="preference_key_miscellaneous">preference_key_misc</string>
     <string name="preference_key_instructions">preference_key_read_me</string>
     <string name="preference_key_support">preference_key_support</string>

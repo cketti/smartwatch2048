@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -42,6 +43,7 @@ public class GamePreferenceActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preference);
 
         setupMoveModePreference();
+        setupVibratePreference();
 
         setupInstructionsPreference();
         setupPremiumVersionPreference();
@@ -68,6 +70,33 @@ public class GamePreferenceActivity extends PreferenceActivity {
                 return true;
             }
         });
+    }
+
+    private void setupVibratePreference() {
+        final CheckBoxPreference vibratePreference = (CheckBoxPreference) findPreference(
+                getString(R.string.preference_key_vibrate));
+        setVibrateSummary(vibratePreference, vibratePreference.isChecked());
+        vibratePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean newVibrateValue = (Boolean) newValue;
+                if (vibratePreference.isChecked() != newVibrateValue) {
+                    GameExtensionService.settingsChanged(getApplicationContext());
+                }
+
+                setVibrateSummary(vibratePreference, newVibrateValue);
+
+                return true;
+            }
+        });
+    }
+
+    private void setVibrateSummary(CheckBoxPreference vibratePreference, boolean newVibrateValue) {
+        if (newVibrateValue) {
+            vibratePreference.setSummary(R.string.preference_summary_vibrate_enabled);
+        } else {
+            vibratePreference.setSummary(R.string.preference_summary_vibrate_disabled);
+        }
     }
 
     private void setupInstructionsPreference() {

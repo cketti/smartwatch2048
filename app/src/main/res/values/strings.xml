@@ -13,6 +13,9 @@
     <!-- Menu options shown in preferences -->
     <string name="preference_category_game_settings">Game settings</string>
     <string name="preference_option_move_number_tiles">Move number tiles</string>
+    <string name="preference_option_vibrate">Vibrate</string>
+    <string name="preference_summary_vibrate_enabled">Vibrate when moving tiles</string>
+    <string name="preference_summary_vibrate_disabled">Don\'t vibrate when moving tiles</string>
 
     <string name="preference_category_miscellaneous">Miscellaneous</string>
     <string name="preference_option_instructions">Instructions</string>
