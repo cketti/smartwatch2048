@@ -55,4 +55,6 @@
     <string name="continue_purchase_process_on_phone">Please continue the purchase process on your Android device.\nNote that you can also start a new game if you don\'t want to buy the app just yet.</string>
     <string name="activity_buy_game_label">Buy full version</string>
     <string name="thanks_for_buying_message">Thank you for buying the full version!\n\nYou can now continue playing the game on your SmartWatch.</string>
+
+    <string name="rate_app">You seem to like the game. Please rate it!</string>
 </resources>

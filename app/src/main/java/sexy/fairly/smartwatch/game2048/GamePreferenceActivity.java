@@ -1,5 +1,7 @@
 package sexy.fairly.smartwatch.game2048;
 
+import java.util.concurrent.TimeUnit;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -18,6 +20,8 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
+import fr.nicolaspomepuy.discreetapprate.AppRate;
+import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 import sexy.fairly.smartwatch.game2048.util.PurchaseHelper;
 
 
@@ -52,7 +56,19 @@ public class GamePreferenceActivity extends PreferenceActivity {
         setupSupportPreference();
         setupGooglePlusPreference();
 
+        setupAppRating();
+
         mPurchaseHelper = new PurchaseHelper(this, mPurchaseListener);
+    }
+
+    private void setupAppRating() {
+        AppRate.with(this)
+                .text(R.string.rate_app)
+                .initialLaunchCount(3)
+                .retryPolicy(RetryPolicy.INCREMENTAL)
+                .minInterval(TimeUnit.MINUTES.toMillis(5))
+                .installedSince(TimeUnit.DAYS.toMillis(7))
+                .checkAndShow();
     }
 
     private void setupMoveModePreference() {
