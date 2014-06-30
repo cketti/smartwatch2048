@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Something went wrong while trying to purchase the full version."/>
+                android:text="@string/purchase_error_while_buying"/>
 
         <Button
                 android:id="@+id/buy_game_button"
@@ -42,6 +42,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Try again"/>
+                android:text="@string/purchase_try_again"/>
     </LinearLayout>
 </RelativeLayout>

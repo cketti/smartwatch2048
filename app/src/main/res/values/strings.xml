@@ -57,4 +57,7 @@
     <string name="thanks_for_buying_message">Thank you for buying the full version!\n\nYou can now continue playing the game on your SmartWatch.</string>
 
     <string name="rate_app">You seem to like the game. Please rate it!</string>
+    <string name="purchase_error_while_buying">Something went wrong while trying to purchase the full version.</string>
+    <string name="purchase_try_again">Try again</string>
+    <string name="purchase_cancelled">Awww, you didn\'t buy the game after all?\n\nHow about another round?</string>
 </resources>
