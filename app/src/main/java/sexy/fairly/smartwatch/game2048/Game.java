@@ -1,14 +1,21 @@
 package sexy.fairly.smartwatch.game2048;
 
 
-import android.util.Pair;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import android.util.Pair;
+
 public class Game {
     public static final int FREE_LIMIT = 512;
+    public static final int CONSOLATION_LIMIT = 2048;
     public static final int MAX_TILE = 8192;
+
+    public static enum Version {
+        TRIAL,
+        CONSOLATION,
+        FULL
+    }
 
     private final InsertCellCallback mCallback;
     private Grid mGrid;
@@ -17,8 +24,9 @@ public class Game {
     private boolean mGameRunning;
     private boolean mGameWon;
     private boolean mGameAlreadyWon;
-    private boolean mFullVersion = true;
+    private Version mVersion = Version.FULL;
     private boolean mFreeLimitReached;
+    private boolean mConsolationLimitReached;
 
     public Game(InsertCellCallback callback) {
         mCallback = callback;
@@ -28,6 +36,7 @@ public class Game {
     public void newGame() {
         mScore = 0;
         mFreeLimitReached = false;
+        mConsolationLimitReached = false;
         mGrid = new Grid(4);
         addRandomTile();
         addRandomTile();
@@ -39,6 +48,7 @@ public class Game {
     public void setGrid(int[][] cells) {
         mGrid = new Grid(cells);
         freeLimitCheck();
+        consolationLimitCheck();
         gameOverCheck();
         gameWonCheck();
     }
@@ -99,7 +109,10 @@ public class Game {
 
                         if (!mFreeLimitReached && merged.value == FREE_LIMIT) {
                             mFreeLimitReached = true;
+                        }
 
+                        if (!mConsolationLimitReached && merged.value == CONSOLATION_LIMIT) {
+                            mConsolationLimitReached = true;
                         }
 
                         if (!mGameAlreadyWon && merged.value == 2048) {
@@ -133,18 +146,26 @@ public class Game {
     }
 
     private void freeLimitCheck() {
-        mFreeLimitReached = false;
+        mFreeLimitReached = isLimitReached(FREE_LIMIT);
+    }
+
+    private void consolationLimitCheck() {
+        mConsolationLimitReached = isLimitReached(CONSOLATION_LIMIT);
+    }
+
+    private boolean isLimitReached(int limit) {
         int gridSize = mGrid.getSize();
 
         for (int y = 0; y < gridSize; y++) {
             for (int x = 0; x < gridSize; x++) {
                 int value = mGrid.valueAt(x, y);
-                if (value >= FREE_LIMIT) {
-                    mFreeLimitReached = true;
-                    return;
+                if (value >= limit) {
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 
     private void gameOverCheck() {
@@ -299,11 +320,15 @@ public class Game {
     }
 
     public boolean isFreeLimitReached() {
-        return !mFullVersion && mFreeLimitReached;
+        return mVersion == Version.TRIAL && mFreeLimitReached;
     }
 
-    public void setFullVersion(boolean fullVersion) {
-        mFullVersion = fullVersion;
+    public boolean isConsolationLimitReached() {
+        return mVersion == Version.CONSOLATION && mConsolationLimitReached;
+    }
+
+    public void setVersion(Version version) {
+        mVersion = version;
     }
 
     public static interface InsertCellCallback {

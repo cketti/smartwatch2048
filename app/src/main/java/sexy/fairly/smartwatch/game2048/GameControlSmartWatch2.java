@@ -65,6 +65,7 @@ class GameControlSmartWatch2 extends ControlExtension {
         WON,
         SCORE,
         FREE_LIMIT_REACHED,
+        CONSOLATION_LIMIT_REACHED,
         PURCHASE_IN_PROGRESS,
         PURCHASE_CANCELLED
     }
@@ -81,6 +82,7 @@ class GameControlSmartWatch2 extends ControlExtension {
     private Handler mHandler;
     private Game mGame;
     private GameState mGameState;
+    private Game.Version mVersion;
     private MoveMode mMoveMode;
     private boolean mVibrate;
 
@@ -142,6 +144,9 @@ class GameControlSmartWatch2 extends ControlExtension {
                 }, NEW_TILE_TIMEOUT);
             }
         });
+        if (mVersion != null) {
+            mGame.setVersion(mVersion);
+        }
 
         mGameState = GameState.LOADING;
         renderGame();
@@ -286,7 +291,9 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     private void updateGameState() {
-        if (!mGame.isGameRunning()) {
+        if (mGame.isConsolationLimitReached()) {
+            mGameState = GameState.CONSOLATION_LIMIT_REACHED;
+        } else if (!mGame.isGameRunning()) {
             if (mGame.isGameWon()) {
                 mGameState = GameState.WON_WAIT;
                 mHandler.postDelayed(new Runnable() {
@@ -370,6 +377,10 @@ class GameControlSmartWatch2 extends ControlExtension {
             }
             case FREE_LIMIT_REACHED: {
                 showLayout(R.layout.buy_game, null);
+                break;
+            }
+            case CONSOLATION_LIMIT_REACHED: {
+                showLayout(R.layout.you_won_end, null);
                 break;
             }
             case PURCHASE_IN_PROGRESS: {
@@ -471,8 +482,14 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     private void setFullVersion() {
-        mGame.setFullVersion(true);
+        mVersion = Game.Version.FULL;
+        if (mGame == null) {
+            return;
+        }
+
+        mGame.setVersion(Game.Version.FULL);
         if (mGameState == GameState.FREE_LIMIT_REACHED ||
+                mGameState == GameState.CONSOLATION_LIMIT_REACHED ||
                 mGameState == GameState.PURCHASE_IN_PROGRESS ||
                 mGameState == GameState.PURCHASE_CANCELLED) {
             mGameState = GameState.RUNNING;
@@ -482,9 +499,28 @@ class GameControlSmartWatch2 extends ControlExtension {
     }
 
     private void setTrialVersion() {
-        mGame.setFullVersion(false);
+        mVersion = Game.Version.TRIAL;
+        if (mGame == null) {
+            return;
+        }
+
+        mGame.setVersion(Game.Version.TRIAL);
         if (mGame.isFreeLimitReached() && mGameState == GameState.RUNNING) {
             mGameState = GameState.FREE_LIMIT_REACHED;
+            updateGameState();
+            renderGame();
+        }
+    }
+
+    private void setConsolationVersion() {
+        mVersion = Game.Version.CONSOLATION;
+        if (mGame == null) {
+            return;
+        }
+
+        mGame.setVersion(Game.Version.CONSOLATION);
+        if (mGame.isConsolationLimitReached() && mGameState == GameState.RUNNING) {
+            mGameState = GameState.CONSOLATION_LIMIT_REACHED;
             updateGameState();
             renderGame();
         }
@@ -523,7 +559,7 @@ class GameControlSmartWatch2 extends ControlExtension {
 
         @Override
         public void billingNotAvailable() {
-            setFullVersion();
+            setConsolationVersion();
         }
     }
 }
