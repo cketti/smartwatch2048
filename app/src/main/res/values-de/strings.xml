@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- No translation of sample extensions -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Name of app, shown when installing/uninstalling extension -->
+    <string name="app_name">2048 - Das Spiel</string>
+    <!-- Title of preference activity -->
+    <string name="preference_activity_title">2048 - Einstellungen</string>
+    <!-- Name of extension, shown in preferences -->
+    <string name="extension_name">2048 - Das Spiel</string>
+    <!-- Configuration title shown in preferences -->
+    <string name="configuration_text">2048 Einstellungen</string>
+
+    <!-- Menu options shown in preferences -->
+    <string name="preference_category_game_settings">Spiele-Einstellungen</string>
+    <string name="preference_option_move_number_tiles">Nummern verschieben</string>
+    <string name="preference_option_vibrate">Vibrieren</string>
+    <string name="preference_summary_vibrate_enabled">Vibriere, wenn Nummern verschoben werden</string>
+    <string name="preference_summary_vibrate_disabled">Vibriere nicht, wenn Nummern verschoben werden</string>
+
+    <string name="preference_category_miscellaneous">Verschiedenes</string>
+    <string name="preference_option_instructions">Anleitung</string>
+    <string name="preference_summary_instructions">Lerne wie das Spiel gespielt wird</string>
+    <string name="preference_option_premium_version">Premium Version</string>
+    <string name="preference_summary_buy_full_version">Kaufe die Vollversion</string>
+    <string name="preference_summary_loading_purchase_state">Frage Kaufstatus ab…</string>
+    <string name="preference_summary_bought_full_version">Du hast die Vollversion gekauft!</string>
+    <string name="preference_category_about">Über</string>
+    <string name="preference_option_version">Version</string>
+    <string name="preference_option_support">Support</string>
+    <string name="preference_option_google_plus">Google+</string>
+    <string name="preference_summary_google_plus">Folge MAXINT Apps auf Google+</string>
+
+    <string name="move_number_tiles_click">Klicken am Rand des Bildschirms</string>
+    <string name="move_number_tiles_swipe">Wischgesten</string>
+    <string name="move_number_tiles_click_or_swipe">Klicken oder Wischgesten</string>
+
+    <string name="preference_option_instructions_txt_swipe">Wische nach oben, unten, links und rechts um die Nummernfelder auf dem Bildschirm zu verschieben. Führe gleiche Nummern zusammen, um die Zahl 2048 zu erzeugen.\n\nUnglücklicherweise ist die Gestenerkennung der Uhr relativ schlecht. Nach unserer Erfahrung funktioniert das Wischen in der Mitte des Bildschirms am besten.</string>
+    <string name="preference_option_instructions_txt_click">Klicke in die Nähe der Bildschirmränder um die Nummernfelder zu bewegen. Führe gleiche Nummern zusammen, um die Zahl 2048 zu erzeugen.</string>
+    <string name="preference_option_instructions_txt_click_or_swipe">Klicke in die Nähe der Bildschirmränder oder wische nach oben, unten, links und rechts um die Nummernfelder auf dem Bildschirm zu verschieben. Führe gleiche Nummern zusammen, um die Zahl 2048 zu erzeugen.\n\nUnglücklicherweise ist die Gestenerkennung der Uhr relativ schlecht. Nach unserer Erfahrung funktioniert das Wischen in der Mitte des Bildschirms am besten.</string>
+    <string name="preference_option_instructions_txt_free">\n\nIn der Testphase kannst du so lange spielen bis du die Zahl 512 erzeugt hast. Um weiterzuspielen musst du das Spiel kaufen.</string>
+
+    <string name="loading_state">Lade…</string>
+    <string name="button_label_continue">Weiter</string>
+    <string name="button_label_try_again">Neuer Versuch</string>
+    <string name="game_over">Verloren!</string>
+    <string name="winning">Gewonnen!</string>
+    <string name="button_label_new_game">Neues Spiel</string>
+    <string name="score_format">Punkte: %d</string>
+    <string name="best_score_format">Beste: %d</string>
+    <string name="menu_new_game">Neues Spiel</string>
+    <string name="menu_show_score">Zeige Punkte</string>
+    <string name="nicely_done_message">Ein 512-Feld. Sehr gut!</string>
+    <string name="end_of_trial_message">Unglücklicherweise markiert dies das Ende der Probephase. Um weiterzuspielen, kaufe bitte das Spiel.</string>
+    <string name="get_full_version">Vollversion kaufen</string>
+    <string name="continue_purchase_process_on_phone">Bitte setze den Kaufprozess auf dem Android-Gerät fort.\nDu kannst aber auch ein neues Spiel starten, wenn du die App noch nicht kaufen willst.</string>
+    <string name="activity_buy_game_label">Vollversion kaufen</string>
+    <string name="thanks_for_buying_message">Vielen Dank für das Kaufen der Vollversion!\n\nDu kannst das Spiel nun auf deiner SmartWatch fortsetzen.</string>
+
+    <string name="rate_app">Dir scheint das Spiel zu gefallen. Bitte bewerte die App!</string>
+    <string name="purchase_error_while_buying">Während des Kaufprozesses ist ein Fehler aufgetreten.</string>
+    <string name="purchase_try_again">Noch einmal versuchen</string>
+    <string name="purchase_cancelled">Schade, du hast das Spiel doch nicht gekauft?\n\nWie wäre es mit einer neuen Runde?</string>
+</resources>
